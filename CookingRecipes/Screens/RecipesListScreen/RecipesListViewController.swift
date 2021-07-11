@@ -25,7 +25,9 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     // For search
     var filteredRecipes: [Recipe] = []
     let searchController = UISearchController(searchResultsController: nil)
-    
+    var selectedCategory: DishType?
+    var selectedDate: Date?
+        
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -69,6 +71,11 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         // Setup for the scope bar
         searchController.searchBar.scopeButtonTitles = ["All"] + DishType.allCases.map { $0.rawValue }
         searchController.searchBar.delegate = self
+        
+        // Setup for date picker button
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(named: "Sort"), for: .bookmark, state: .normal)
+        
     }
     
     private func getData() {
@@ -80,12 +87,14 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
                                             category: DishType?,
                                             date: Date?) {
         filteredRecipes = profile.recipes.filter { (recipe: Recipe) -> Bool in
-            let doesCategoryMatch = category == nil || recipe.type == category
+            let doesMatchCategory = category == nil || recipe.type == category
+            let doesMatchDate = date == nil
+                || Calendar.current.compare(recipe.creationDate, to: date, toGranularity: .day)
             
             if isSearchBarEmpty {
-                return doesCategoryMatch
+                return doesMatchCategory && doesMatchDate
             } else {
-                return doesCategoryMatch && recipe.title.lowercased().contains(searchText.lowercased())
+                return doesMatchCategory && doesMatchDate && recipe.title.lowercased().contains(searchText.lowercased())
             }
         }
         
@@ -166,14 +175,31 @@ extension RecipesListViewController: UITableViewDataSource {
 extension RecipesListViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
-        let category = DishType(rawValue: searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex])
-        filterContentForSearchText(searchBar.text!, category: category, date: nil)
+        selectedCategory = DishType(rawValue: searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex])
+        filterContentForSearchText(searchBar.text!, category: selectedCategory, date: nil)
     }
 }
 
 extension RecipesListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        let category = DishType(rawValue: searchBar.scopeButtonTitles![selectedScope])
-        filterContentForSearchText(searchBar.text!, category: category, date: nil)
+        selectedCategory = DishType(rawValue: searchBar.scopeButtonTitles![selectedScope])
+        filterContentForSearchText(searchBar.text!, category: selectedCategory, date: selectedDate)
+    }
+    
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        let alert = UIAlertController(title: "Select date", message: nil, preferredStyle: .actionSheet)
+        //(style: .actionSheet, title: "Select date")
+        let datePicker = UIDatePicker()
+        datePicker.timeZone = NSTimeZone.local
+        datePicker.frame = CGRect(x: 0, y: 15, width: 270, height: 200)
+        alert.view.addSubview(datePicker)
+        let filterAction = UIAlertAction(title: "Choose", style: .default) { [unowned self] _ in
+            self.selectedDate = datePicker.date
+            filterContentForSearchText(searchBar.text!, category: self.selectedCategory, date: self.selectedDate)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(filterAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
     }
 }
