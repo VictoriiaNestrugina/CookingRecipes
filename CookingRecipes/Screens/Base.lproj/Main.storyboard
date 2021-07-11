@@ -140,8 +140,8 @@
                                     <constraint firstAttribute="height" constant="216" id="swE-Ku-Lvw"/>
                                 </constraints>
                             </pickerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsJ-ob-Nrz">
-                                <rect key="frame" x="10" y="232" width="42" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Method" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsJ-ob-Nrz">
+                                <rect key="frame" x="10" y="232" width="59" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="QBv-96-Gma"/>
                                 </constraints>
@@ -193,8 +193,16 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Add recipe" id="huo-wb-iNC">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="ias-uQ-Gg6"/>
-                        <barButtonItem key="rightBarButtonItem" title="Save" id="oR4-pP-CNa"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="ias-uQ-Gg6">
+                            <connections>
+                                <action selector="cancelTapped:" destination="gBq-kg-REn" id="zWW-6Q-2GQ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="oR4-pP-CNa">
+                            <connections>
+                                <action selector="saveTapped:" destination="gBq-kg-REn" id="FrH-yK-Ojw"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="dishType" destination="8qM-3a-ZUp" id="Ofp-x6-gtE"/>

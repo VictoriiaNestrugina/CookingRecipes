@@ -8,16 +8,9 @@
 import Foundation
 import RealmSwift
 
-enum DishType: String {
-    case dessert = "Dessert"
-    case baking = "Baking"
-    case pasta = "Pasta"
-    case pizza = "Pizza"
-    case salad = "Salad"
-    case sandwich = "Sandwich"
-    case soup = "Soup"
-    case stew = "Stew"
-    case drink = "Drink"
+enum DishType: String, CaseIterable {
+    case mainCourse = "Main course"
     case side = "Side"
-    case snack = "Snack"
+    case dessert = "Dessert"
+    case drink = "Drink"
 }
