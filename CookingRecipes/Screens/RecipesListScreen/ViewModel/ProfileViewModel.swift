@@ -7,6 +7,11 @@
 
 import Foundation
 
+// Here goes:
+// 1. Validation
+// 2. Database extraction
+// 3. Data transformation to pass to view controller when needed to display
+
 class ProfileViewModel: NSObject {
     
     // MARK: - Properties
@@ -17,9 +22,12 @@ class ProfileViewModel: NSObject {
     
     override init() {
         super.init()
-        guard let data =  else {
-
-        }
+        let profile = MockDataProvider.provideMockData()
+        let nameItem = ProfileViewModelNameItem(id: profile.id, fullName: profile.fullName)
+        items.append(nameItem)
+        
+        let recipesItem = ProfileViewModelRecipesItem(recipes: profile.recipes)
+        items.append(recipesItem)
     }
     
     // MARK: - Database extraction
@@ -29,6 +37,32 @@ class ProfileViewModel: NSObject {
 //
 //        return
 //    }
+    
+    // MARK: - Methods
+    
+    func addRecipe(recipe: Recipe) {
+        guard items.count >= 2, let profileViewModelRecipesItem = items[1] as? ProfileViewModelRecipesItem else {
+            return
+        }
+        profileViewModelRecipesItem.recipes.append(recipe)
+    }
+    
+    func removeRecipe(with id: String) {
+        guard items.count >= 2, let profileViewModelRecipesItem = items[1] as? ProfileViewModelRecipesItem else {
+            return
+        }
+        
+        var isFound = false
+        var i = 0
+        while i < profileViewModelRecipesItem.recipes.count && !isFound {
+            if profileViewModelRecipesItem.recipes[i].id == id {
+                isFound = true
+            } else {
+                i += 1
+            }
+        }
+        profileViewModelRecipesItem.recipes.remove(at: i)
+    }
     
     // MARK: - FOR IMPORT, just a scratch
     
@@ -52,5 +86,6 @@ class ProfileViewModel: NSObject {
         if let path = bundle.path(forResource: filename, ofType: "json") {
             return (try? Data(contentsOf: URL(fileURLWithPath: path)))
         }
+        return nil
     }
 }

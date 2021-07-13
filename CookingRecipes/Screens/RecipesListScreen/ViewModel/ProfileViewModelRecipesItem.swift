@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import RealmSwift
 
 class ProfileViewModelRecipesItem: ProfileViewModelItem {
-    var recipes: [Recipe]
+    var recipes: List<Recipe>
     
     var rowCount: Int {
         return recipes.count
     }
     
-    init(recipes: [Recipe]) {
+    init(recipes: List<Recipe>) {
         self.recipes = recipes
     }
 }

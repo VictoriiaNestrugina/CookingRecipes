@@ -23,6 +23,9 @@ class Profile: Object {
 //
 //    }
     
+    override init() {
+        super.init()
+    }
     // MARK: - Static functions
     
     override static func primaryKey() -> String? {
@@ -44,11 +47,11 @@ class Profile: Object {
                let body = json["data"] as? [String: Any] {
                 self.fullName = body["fullName"] as! String
                 self.id = body["id"] as! String
-                self.recipes = body["recipes"] as? [[String: Any]] {
-                    self.recipes = recipes.map {
-                        Recipe(json: $0)
-                    }
-                }
+//                self.recipes = body["recipes"] as? [[String: Any]] {
+//                    self.recipes = recipes.map {
+//                        Recipe(json: $0)
+//                    }
+//                }
             }
         } catch {
             print("Erroe deserializing JSON")

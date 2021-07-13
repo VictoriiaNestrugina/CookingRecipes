@@ -16,7 +16,11 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     
     // MARK: - Properties
     
-    var profileViewModel: ProfileViewModel?
+    var profileViewModel: ProfileViewModel? {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     // We need to:
     //1. request the data
     //2. Pass it to ViewModel
@@ -44,7 +48,9 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         
         setupSearchBar()
         getData()
+        
         guard let profileViewModel = profileViewModel,
+              profileViewModel.items.count > 0,
               let profileViewModelNameItem = profileViewModel.items[0] as? ProfileViewModelNameItem else {
             return
         }
@@ -92,7 +98,9 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
                                             category: DishType?,
                                             date: Date?) {
         
-        guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+        guard let profileViewModel = profileViewModel,
+              profileViewModel.items.count > 0,
+              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
             return
         }
         
@@ -111,17 +119,15 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         tableView.reloadData()
     }
     
-    
-    /*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        let navigationController = segue.destination as! UINavigationController
+        if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
+            newRecipeViewController.delegate = self
+        }
+        
     }
-    */
-
 }
 
 extension RecipesListViewController: UITableViewDataSource {
@@ -135,7 +141,9 @@ extension RecipesListViewController: UITableViewDataSource {
             return filteredRecipes.count
         }
     
-        guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+        guard let profileViewModel = profileViewModel,
+              profileViewModel.items.count > 0,
+              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
             return 0
         }
         
@@ -158,18 +166,6 @@ extension RecipesListViewController: UITableViewDataSource {
         return cell
     }
     
-    // Not sure if I really need this thing
-    //func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        //if profile.recipes.count > indexPath.row {
-        //let recipe = recipes[indexPath.row]
-        // here goes deleting the thing from the database - todo!!!
-        
-        //profile.recipes.remove(at: indexPath.row)
-        //tableView.deleteRows(at: [indexPath], with: .fade)
-        
-        //}
-    //}
-    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let recipe: Recipe
@@ -181,9 +177,8 @@ extension RecipesListViewController: UITableViewDataSource {
                 }
                 recipe = profileViewModelRecipesItem.recipes[indexPath.row]
             }
-            // here goes deleting the thing from the database - todo!!!
-            //remove it by using its id
-            //profileViewModelRecipesItem.recipes.remove(at: indexPath.row)
+            // here goes deleting the thing from the database
+            profileViewModel?.removeRecipe(with: recipe.id)
             
             tableView.deleteRows(at: [indexPath], with: .fade)
             
@@ -220,5 +215,12 @@ extension RecipesListViewController: UISearchBarDelegate {
         alert.addAction(filterAction)
         alert.addAction(cancelAction)
         present(alert, animated: true, completion: nil)
+    }
+}
+
+extension RecipesListViewController: NewRecipeViewControllerDelegate {
+    func newRecipeViewController(_ newRecipeViewController: NewRecipeViewController, didAddRecipe recipe: Recipe) {
+        profileViewModel?.addRecipe(recipe: recipe)
+        tableView.reloadData()
     }
 }

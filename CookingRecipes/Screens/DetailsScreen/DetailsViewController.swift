@@ -13,8 +13,8 @@ class DetailsViewController: UIViewController {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var typeLabel: UILabel!
-    @IBOutlet weak var ingredientsTextField: UITextField!
-    @IBOutlet weak var methodTextField: UITextField!
+    @IBOutlet weak var ingredientsTextField: UITextView!
+    @IBOutlet weak var methodTextField: UITextView!
     @IBOutlet weak var recipeImageView: UIImageView!
     
     // MARK: - Properties

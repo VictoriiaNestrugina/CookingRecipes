@@ -12,9 +12,9 @@ class NewRecipeViewController: UIViewController {
 
     // MARK: - IBOutlet
     
-    @IBOutlet weak var title: UITextField!
-    @IBOutlet weak var ingredients: UITextField!
-    @IBOutlet weak var method: UITextField!
+    @IBOutlet weak var titleTextField: UITextField!
+    @IBOutlet weak var ingredients: UITextView!
+    @IBOutlet weak var method: UITextView!
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var dishType: UIPickerView!
     
@@ -22,6 +22,7 @@ class NewRecipeViewController: UIViewController {
     
     var pickerData: [String] = [String]()
     var selectedType: String?
+    var delegate: NewRecipeViewControllerDelegate?
     
     // MARK: - UIViewController
     
@@ -33,26 +34,33 @@ class NewRecipeViewController: UIViewController {
     
     // MARK: - IBActions
     
+    @IBAction func uploadImage(_ sender: UIButton) {
+        presentPhotoPicker(sourceType: .photoLibrary)
+    }
+    
     @IBAction func saveTapped(_ sender: UIBarButtonItem) {
-        let recipeTitle = title.text ?? ""
-        let recipeIngredients = ingredients.text ?? ""
+        let recipeTitle = titleTextField.text ?? ""
+        let recipeIngredients = (ingredients.text ?? "").split(separator: "\n").map {
+            String($0)
+        }
+        
         let recipeMethod = method.text ?? ""
-        let recipeImage = image.image
-        let recipeDishType = selectedType
+        let recipeImage = image.image ?? UIImage()
+        let recipeDishType = selectedType!
         
         //Here goes the creation of a database object and its saving
-        let newRecipe = Recipe()
-        newRecipe.title = recipeTitle
-        newRecipe.ingredients = recipeIngredients
-        newRecipe.method = recipeMethod
-        newRecipe.image = recipeImage
-        newRecipe.id = UUID().uuidString
-        newRecipe.creationDate = Date()
+        
+        let newRecipe = Recipe.create(withTitle: recipeTitle,
+                                      ingredients: recipeIngredients,
+                                      method: recipeMethod,
+                                      type: DishType(rawValue: recipeDishType)!,
+                                      image: recipeImage)
         
         // TODO: Realm
         // Not sure if recipe model should be directly used here or ViewModel somehow
         // ... code
-        try! realm.write(newRecipe)
+        //try! realm.write(newRecipe)
+        delegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
         
         dismiss(animated: true, completion: nil)
     }
@@ -101,5 +109,22 @@ extension NewRecipeViewController: UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return pickerData.count
+    }
+}
+
+extension NewRecipeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    private func presentPhotoPicker(sourceType: UIImagePickerController.SourceType) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = sourceType
+        present(picker, animated: true)
+    }
+    
+    //Handling Image Picker Selection
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+        self.image.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
     }
 }

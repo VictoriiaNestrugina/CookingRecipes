@@ -20,7 +20,7 @@ class Recipe: Object {
     // MARK: - Properties
     
     @objc dynamic var id = ""
-    
+
     @objc dynamic var title = ""
     var ingredients = List<String>()
     @objc dynamic var method = ""
@@ -30,6 +30,9 @@ class Recipe: Object {
     
     // MARK: - Initialization
     
+    override init() {
+        super.init()
+    }
     // Здесь инициализатор из массива String, переданный Profile
     //    init(data: Data) {
     //
@@ -47,6 +50,7 @@ class Recipe: Object {
                        type: DishType,
                        image: UIImage) -> Recipe {
         let recipe = Recipe()
+        recipe.id = UUID().uuidString
         recipe.title = title
         recipe.ingredients.append(objectsIn: ingredients)
         recipe.method = method
@@ -57,17 +61,27 @@ class Recipe: Object {
     }
     
     var uiImage: UIImage {
-        return UIImage(data: image as Data)!
+        get {
+            return UIImage(data: image as Data)!
+        }
+        set(image) {
+            self.image = NSData(data: image.jpegData(compressionQuality: 1.0)!)
+        }
+    }
+    
+    var ingredientsArray: [String] {
+        return Array(ingredients)
     }
     
     // MARK: - FOR IMPORT, just a scratch
     
     init(json: [String: Any]) {
-        self.id = json["id"] as! String
+        super.init()
+        //        self.id = json["id"] as! String
         self.title = json["title"] as! String
-        self.ingredients = (json["ingredients"] as! [[String: Any]]).map {
-            String($0)
-        }
+//        self.ingredients.append(objectsIn: (json["ingredients"] as! [[String: Any]]).map {
+//            String($0)
+//        })
         self.method = json["method"] as! String
         self.creationDate = convertStringToDate(string: json["creationDate"] as! String)
         self.type = json["method"] as! String
