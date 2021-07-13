@@ -10,9 +10,20 @@ import RealmSwift
 
 class Profile: Object {
     
+    // MARK: - Properties
+    
     @objc dynamic var id = ""
     @objc dynamic var fullName = ""
     var recipes = List<Recipe>()
+    
+    // MARK: - Initialization
+    
+    // Здесь инициализация из Data, которая по цепочке передается как массив String вложенным объектам
+//    init(data: Data) {
+//
+//    }
+    
+    // MARK: - Static functions
     
     override static func primaryKey() -> String? {
         return "id"
@@ -24,5 +35,24 @@ class Profile: Object {
         profile.recipes.append(objectsIn: recipes)
         
         return profile
+    }
+    
+    // MARK: - FOR IMPORT, just a scratch
+    init?(data: Data) {
+        do {
+            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let body = json["data"] as? [String: Any] {
+                self.fullName = body["fullName"] as! String
+                self.id = body["id"] as! String
+                self.recipes = body["recipes"] as? [[String: Any]] {
+                    self.recipes = recipes.map {
+                        Recipe(json: $0)
+                    }
+                }
+            }
+        } catch {
+            print("Erroe deserializing JSON")
+            return nil
+        }
     }
 }

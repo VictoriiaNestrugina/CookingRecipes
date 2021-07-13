@@ -5,6 +5,7 @@
 //  Created by Victoriia Nestrugina on 7/11/21.
 //
 
+import RealmSwift
 import UIKit
 
 class NewRecipeViewController: UIViewController {
@@ -51,6 +52,7 @@ class NewRecipeViewController: UIViewController {
         // TODO: Realm
         // Not sure if recipe model should be directly used here or ViewModel somehow
         // ... code
+        try! realm.write(newRecipe)
         
         dismiss(animated: true, completion: nil)
     }

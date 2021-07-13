@@ -17,6 +17,17 @@ class RecipeTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     
+    var item: Recipe? {
+        didSet {
+            guard let item = item else {
+                return
+            }
+            title?.text = item.title
+            category?.text = item.type
+            recipeImage.image = item.uiImage
+        }
+    }
+    
     // MARK: - UITableViewCell
     
     override func awakeFromNib() {

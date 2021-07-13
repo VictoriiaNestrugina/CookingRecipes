@@ -24,6 +24,8 @@
 		9846DFDB269AF4C800533700 /* ProfileViewModelNameItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846DFDA269AF4C800533700 /* ProfileViewModelNameItem.swift */; };
 		9846DFE4269B3EAF00533700 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846DFE3269B3EAF00533700 /* ProfileViewModel.swift */; };
 		9846DFE9269B551A00533700 /* NewRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846DFE8269B551A00533700 /* NewRecipeViewController.swift */; };
+		9846E008269C77B400533700 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E007269C77B400533700 /* DetailsViewController.swift */; };
+		9846E011269CA3E700533700 /* ProfileViewModelRecipesItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E010269CA3E700533700 /* ProfileViewModelRecipesItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +70,8 @@
 		9846DFDA269AF4C800533700 /* ProfileViewModelNameItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModelNameItem.swift; sourceTree = "<group>"; };
 		9846DFE3269B3EAF00533700 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		9846DFE8269B551A00533700 /* NewRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRecipeViewController.swift; sourceTree = "<group>"; };
+		9846E007269C77B400533700 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
+		9846E010269CA3E700533700 /* ProfileViewModelRecipesItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModelRecipesItem.swift; sourceTree = "<group>"; };
 		E9B2F22DC09D5BC186F1F502 /* Pods-CookingRecipes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CookingRecipes.debug.xcconfig"; path = "Target Support Files/Pods-CookingRecipes/Pods-CookingRecipes.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -194,6 +198,7 @@
 				983A5B242698CE6E006A3A6B /* RecipesListScreen */,
 				983A5B232698CE4C006A3A6B /* AuthorizationScreen */,
 				983A5B252698CE9E006A3A6B /* NewRecipeScreen */,
+				9846E006269C779000533700 /* DetailsScreen */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -249,11 +254,28 @@
 		9846DFE2269B3E8A00533700 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				9846DFD4269AE64500533700 /* ProfileViewModelRecipeItem.swift */,
+				9846E00F269CA3CA00533700 /* Not used */,
 				9846DFDA269AF4C800533700 /* ProfileViewModelNameItem.swift */,
+				9846E010269CA3E700533700 /* ProfileViewModelRecipesItem.swift */,
 				9846DFE3269B3EAF00533700 /* ProfileViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		9846E006269C779000533700 /* DetailsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				9846E007269C77B400533700 /* DetailsViewController.swift */,
+			);
+			path = DetailsScreen;
+			sourceTree = "<group>";
+		};
+		9846E00F269CA3CA00533700 /* Not used */ = {
+			isa = PBXGroup;
+			children = (
+				9846DFD4269AE64500533700 /* ProfileViewModelRecipeItem.swift */,
+			);
+			path = "Not used";
 			sourceTree = "<group>";
 		};
 		C2B2F9EF84BC7E205EA246AC /* Frameworks */ = {
@@ -447,8 +469,10 @@
 				9846DFD0269A020900533700 /* ProfileViewModelItem.swift in Sources */,
 				983A5B5A269982BC006A3A6B /* RecipeTableViewCell.swift in Sources */,
 				98094E4C2698989100E7B91E /* AppDelegate.swift in Sources */,
+				9846E011269CA3E700533700 /* ProfileViewModelRecipesItem.swift in Sources */,
 				9846DFD5269AE64500533700 /* ProfileViewModelRecipeItem.swift in Sources */,
 				983A5B412698E454006A3A6B /* Recipe.swift in Sources */,
+				9846E008269C77B400533700 /* DetailsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

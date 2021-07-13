@@ -41,10 +41,14 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//??
-//        tableView.dataSource = profileViewModel
+        
         setupSearchBar()
         getData()
+        guard let profileViewModel = profileViewModel,
+              let profileViewModelNameItem = profileViewModel.items[0] as? ProfileViewModelNameItem else {
+            return
+        }
+        self.title = profileViewModelNameItem.fullName
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +83,7 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     }
     
     private func getData() {
+        profileViewModel = ProfileViewModel()
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -86,10 +91,15 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     private func filterContentForSearchText(_ searchText: String,
                                             category: DishType?,
                                             date: Date?) {
-        filteredRecipes = profile.recipes.filter { (recipe: Recipe) -> Bool in
-            let doesMatchCategory = category == nil || recipe.type == category
+        
+        guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+            return
+        }
+        
+        filteredRecipes = profileViewModelRecipesItem.recipes.filter { (recipe: Recipe) -> Bool in
+            let doesMatchCategory = category == nil || recipe.type == category!.rawValue
             let doesMatchDate = date == nil
-                || Calendar.current.compare(recipe.creationDate, to: date, toGranularity: .day)
+                || Calendar.current.compare(recipe.creationDate, to: date!, toGranularity: .day) == .orderedSame
             
             if isSearchBarEmpty {
                 return doesMatchCategory && doesMatchDate
@@ -120,30 +130,36 @@ extension RecipesListViewController: UITableViewDataSource {
         return 1
     }
     
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if isFiltering {
-//            return filteredRecipes.count
-//        }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isFiltering {
+            return filteredRecipes.count
+        }
     
-//        return profile.recipes.count //or smth
-//    }
+        guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+            return 0
+        }
+        
+        return profileViewModelRecipesItem.recipes.count
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "recipeCellIdentifier", for: indexPath) as! RecipeTableViewCell
-        //let recipe: Recipe
-//        if isFiltering {
-//            recipe = filteredRecipes[indexPath.row]
-//        } else {
-//            recipe = profile.recipes[indexPath.row]
-//        }
-        //cell.title.text = recipe.title
-        //cell.dishType = recipe.dishType.rawValue
-        //cell.image = recipe.image
         
+        let recipe: Recipe
+        if isFiltering {
+            recipe = filteredRecipes[indexPath.row]
+        } else {
+            guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+                return cell
+            }
+            recipe = profileViewModelRecipesItem.recipes[indexPath.row]
+        }
+        cell.item = recipe
         return cell
     }
     
-    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+    // Not sure if I really need this thing
+    //func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
         //if profile.recipes.count > indexPath.row {
         //let recipe = recipes[indexPath.row]
         // here goes deleting the thing from the database - todo!!!
@@ -152,21 +168,24 @@ extension RecipesListViewController: UITableViewDataSource {
         //tableView.deleteRows(at: [indexPath], with: .fade)
         
         //}
-    }
+    //}
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            
-//            let recipe: Recipe
-//            if isFiltering {
-//                recipe = filteredRecipes[indexPath.row]
-//            } else {
-//                recipe = profile.recipes[indexPath.row]
-//            }
+            let recipe: Recipe
+            if isFiltering {
+                recipe = filteredRecipes[indexPath.row]
+            } else {
+                guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+                    return
+                }
+                recipe = profileViewModelRecipesItem.recipes[indexPath.row]
+            }
             // here goes deleting the thing from the database - todo!!!
+            //remove it by using its id
+            //profileViewModelRecipesItem.recipes.remove(at: indexPath.row)
             
-            //profile.recipes.remove(at: indexPath.row)
-            //tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.deleteRows(at: [indexPath], with: .fade)
             
         }
     }
@@ -188,7 +207,7 @@ extension RecipesListViewController: UISearchBarDelegate {
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         let alert = UIAlertController(title: "Select date", message: nil, preferredStyle: .actionSheet)
-        //(style: .actionSheet, title: "Select date")
+
         let datePicker = UIDatePicker()
         datePicker.timeZone = NSTimeZone.local
         datePicker.frame = CGRect(x: 0, y: 15, width: 270, height: 200)
