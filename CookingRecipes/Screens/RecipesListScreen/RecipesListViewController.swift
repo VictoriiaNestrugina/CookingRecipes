@@ -7,8 +7,16 @@
 
 import UIKit
 import RealmSwift
+import SwiftyVK
 
 class RecipesListViewController: UIViewController, UITableViewDelegate {
+    
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let screenWidth = UIScreen.main.bounds.width
+        static let screenHeight = UIScreen.main.bounds.height
+    }
     
     // MARK: - IBOutlet
     
@@ -63,6 +71,13 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         // Here goes the data fetching from the database
         
         tableView.reloadData()
+    }
+    
+    // MARK: - IBAction
+    
+    @IBAction func logout(_ sender: UIBarButtonItem) {
+        VK.sessions.default.logOut()
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Private methods
@@ -205,7 +220,7 @@ extension RecipesListViewController: UISearchBarDelegate {
 
         let datePicker = UIDatePicker()
         datePicker.timeZone = NSTimeZone.local
-        datePicker.frame = CGRect(x: 0, y: 15, width: 270, height: 200)
+        datePicker.frame = CGRect(x: 0, y: 15, width: Constants.screenWidth - 10, height: Constants.screenHeight - 10)
         alert.view.addSubview(datePicker)
         let filterAction = UIAlertAction(title: "Choose", style: .default) { [unowned self] _ in
             self.selectedDate = datePicker.date
