@@ -10,6 +10,15 @@ import RealmSwift
 
 final class MockDataProvider {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        // Replace user id with yours to quickly fill the database with recipes
+        static let userId = 52978224
+    }
+    
+    // MARK: - Static methods
+    
     static func provideMockData() -> Profile {
         var recipes: [Recipe] = []
         
@@ -188,7 +197,43 @@ final class MockDataProvider {
         image = UIImage(named: "EnglishGardenMocktail")!
         
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        return Profile.create(withName: "Test Name", recipes: recipes)
+        //return Profile.create(withName: "Test Name", recipes: recipes)
+        
+        let profile = Profile(id: Constants.userId, fullName: "Viktoria Nestrugina")
+        profile.recipes.append(objectsIn: recipes)
+        return profile
+    }
+    
+    static func fillDatabaseWithMockData() {
+        let realm = try! Realm()
+        let profile = provideMockData()
+        
+        let storedProfile = realm.objects(Profile.self).filter {
+            return $0.id == profile.id
+        }
+        
+        print("Stored profiles: \(storedProfile.count)")
+        
+        if storedProfile.isEmpty {
+            try! realm.write {
+                realm.add(profile)
+            }
+        } else {
+            try! realm.write {
+                storedProfile[0].recipes.append(objectsIn: profile.recipes)
+            }
+        }
+    }
+    
+    static func clearDatabase() {
+        DispatchQueue.main.async {
+            let realm = try! Realm()
+            try! realm.write {
+                realm.delete(realm.objects(Profile.self))
+            }
+            
+            print("Objects in database = \(realm.objects(Profile.self).count)")
+        }
         
     }
 }

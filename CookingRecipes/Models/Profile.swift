@@ -12,7 +12,7 @@ class Profile: Object {
     
     // MARK: - Properties
     
-    @objc dynamic var id = ""
+    @objc dynamic var id = 0
     @objc dynamic var fullName = ""
     var recipes = List<Recipe>()
     
@@ -26,6 +26,12 @@ class Profile: Object {
     override init() {
         super.init()
     }
+    
+    init(id: Int, fullName: String) {
+        self.id = id
+        self.fullName = fullName
+    }
+    
     // MARK: - Static functions
     
     override static func primaryKey() -> String? {
@@ -46,7 +52,7 @@ class Profile: Object {
             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                let body = json["data"] as? [String: Any] {
                 self.fullName = body["fullName"] as! String
-                self.id = body["id"] as! String
+                self.id = body["id"] as! Int
 //                self.recipes = body["recipes"] as? [[String: Any]] {
 //                    self.recipes = recipes.map {
 //                        Recipe(json: $0)

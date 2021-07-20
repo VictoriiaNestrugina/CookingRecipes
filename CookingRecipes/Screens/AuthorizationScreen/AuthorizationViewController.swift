@@ -5,78 +5,74 @@
 //  Created by Victoriia Nestrugina on 7/14/21.
 //
 
-import RealmSwift
-import SwiftyVK
 import UIKit
 
 class AuthorizationViewController: UIViewController {
+    
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let recipesListSegueName = "RecipesListSegue"
+    }
 
-    // MARK: - Private properties
+    // MARK: - Properties
     
-    let localRealm = try! Realm()
-    
+    var profileViewModel = ProfileViewModel()
+        
     // MARK: - UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        profileViewModel.delegate = self
     }
     
     // MARK: - IBAction
+    
     @IBAction func authorize(_ sender: UIButton) {
-        VK.sessions.default.logIn(onSuccess: onSuccess(info:),
-                                  onError: onFailure(error:)
-        )
+        Indicator.sharedInstance.showIndicator()
+        profileViewModel.authorize()
     }
     
-    // MARK: - Private methods
-    
-    private func onSuccess(info: [String: String]) {
-        print("SwiftyVK: success authorize with", info)
-        saveUserInfo()
+    @IBAction func fillDBWithMockData(_ sender: UIButton) {
+        MockDataProvider.fillDatabaseWithMockData()
     }
     
-    private func onFailure(error: VKError) {
-        print("SwiftyVK: authorize failed with", error)
-        if case .sessionAlreadyAuthorized(_) = error {
-            saveUserInfo()
-        }
-    }
-    
-    private func saveUserInfo() {
-        VK.API.Account.getProfileInfo(.empty)
-            .onSuccess { info in
-                let json = try JSONSerialization.jsonObject(with: (JSON(info).rawString()?.data(using: .utf8))!, options: [])
-                if let dictionary = json as? [String: Any] {
-                    let dict = dictionary.compactMapValues{ $0 as? String }
-                    if let firstName = dict["first_name"], let lastName = dict["last_name"] {
-                        let fullName = firstName + " " + lastName
-                        UserDefaults.standard.set(fullName, forKey: UserDefaultsConstants.fullName)
-                    }
-                }
-                
-                ///////
-                
-            }
-            .onError {
-                print("SwiftyVK: getting profile info failed with", $0)
-            }
-            .send()
+    @IBAction func clearDB(_ sender: UIButton) {
+        MockDataProvider.clearDatabase()
     }
     
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    //}
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let navigationController = segue.destination as! UINavigationController
+        if let recipesListViewController = navigationController.topViewController as? RecipesListViewController {
+            recipesListViewController.profileViewModel = self.profileViewModel
+        }
+    }
     
     override func shouldPerformSegue(withIdentifier identifier: String?, sender: Any?) -> Bool {
+        
         if let ident = identifier,
-           ident == "RecipesListSegue",
+           ident == Constants.recipesListSegueName,
            !UserDefaults.standard.bool(forKey: UserDefaultsConstants.isAuthorized) {
-            return false
+                return false
         }
         return true
+    }
+}
+
+extension AuthorizationViewController: AuthorizationDelegate {
+    func authorizor(_ loader: ProfileViewModel, didFinishLoadingWithResult result: Bool) {
+        switch result {
+        case true:
+            DispatchQueue.main.async {
+                Indicator.sharedInstance.hideIndicator()
+                self.performSegue(withIdentifier: Constants.recipesListSegueName, sender: nil)
+            }
+            
+        case false:
+            break
+        }
     }
 }

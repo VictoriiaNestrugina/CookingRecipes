@@ -16,23 +16,22 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     private enum Constants {
         static let screenWidth = UIScreen.main.bounds.width
         static let screenHeight = UIScreen.main.bounds.height
+        static let detailsSegueName = "detailsSegue"
     }
     
     // MARK: - IBOutlet
     
     @IBOutlet weak var tableView: UITableView!
     
+    // MARK: - Private properties
+    
+    private var recipes: [Recipe]?
+    private var fullName: String?
+    private var recipeToPass: Recipe?
+    
     // MARK: - Properties
     
-    var profileViewModel: ProfileViewModel? {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    // We need to:
-    //1. request the data
-    //2. Pass it to ViewModel
-    //3. Reload TableView on data update
+    var profileViewModel: ProfileViewModel?
     
     // For search
     var filteredRecipes: [Recipe] = []
@@ -55,22 +54,9 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
         
         setupSearchBar()
-        getData()
-        
-        guard let profileViewModel = profileViewModel,
-              profileViewModel.items.count > 0,
-              let profileViewModelNameItem = profileViewModel.items[0] as? ProfileViewModelNameItem else {
-            return
-        }
-        self.title = profileViewModelNameItem.fullName
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Here goes the data fetching from the database
-        
-        tableView.reloadData()
+        setupData()
+        setupTableView()
+        setupNotifications()
     }
     
     // MARK: - IBAction
@@ -103,27 +89,60 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         
     }
     
-    private func getData() {
-        profileViewModel = ProfileViewModel()
+    private func setupData() {
+        fullName = profileViewModel?.provideFullName()
+        recipes = profileViewModel?.provideRecipes()
+    }
+    
+    private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(GlobalConstants.databaseUpdateNotificationName), object: nil)
+    }
+    
+    @objc func reloadData() {
+        recipes = profileViewModel?.provideRecipes()
+        tableView.reloadData()
     }
     
     private func filterContentForSearchText(_ searchText: String,
                                             category: DishType?,
                                             date: Date?) {
         
-        guard let profileViewModel = profileViewModel,
-              profileViewModel.items.count > 0,
-              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
+//        guard let profileViewModel = profileViewModel,
+//              profileViewModel.items.count > 0,
+//              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
+//            return
+//        }
+        
+//        filteredRecipes = profileViewModelRecipesItem.recipes.filter { (recipe: Recipe) -> Bool in
+//            let doesMatchCategory = category == nil || recipe.type == category!.rawValue
+//            let doesMatchDate = date == nil
+//                || Calendar.current.compare(recipe.creationDate, to: date!, toGranularity: .day) == .orderedSame
+//
+//            if isSearchBarEmpty {
+//                return doesMatchCategory && doesMatchDate
+//            } else {
+//                return doesMatchCategory && doesMatchDate && recipe.title.lowercased().contains(searchText.lowercased())
+//            }
+//        }
+        
+//        guard let profileViewModel = profileViewModel, let recipes = profileViewModel.recipes else {
+//            return
+//        }
+        
+        guard let recipes = recipes else {
             return
         }
         
-        filteredRecipes = profileViewModelRecipesItem.recipes.filter { (recipe: Recipe) -> Bool in
+        filteredRecipes = recipes.filter { (recipe: Recipe) -> Bool in
             let doesMatchCategory = category == nil || recipe.type == category!.rawValue
             let doesMatchDate = date == nil
                 || Calendar.current.compare(recipe.creationDate, to: date!, toGranularity: .day) == .orderedSame
-            
+
             if isSearchBarEmpty {
                 return doesMatchCategory && doesMatchDate
             } else {
@@ -139,9 +158,11 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navigationController = segue.destination as! UINavigationController
         if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
-            newRecipeViewController.delegate = self
+            newRecipeViewController.newRecipeDelegate = self
+        } else if let detailsViewController = navigationController.topViewController as? DetailsViewController {
+            detailsViewController.data = recipeToPass
+            detailsViewController.profileViewModel = profileViewModel
         }
-        
     }
 }
 
@@ -156,13 +177,20 @@ extension RecipesListViewController: UITableViewDataSource {
             return filteredRecipes.count
         }
     
-        guard let profileViewModel = profileViewModel,
-              profileViewModel.items.count > 0,
-              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
+//        guard let profileViewModel = profileViewModel,
+//              profileViewModel.items.count > 0,
+//              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
+//            return 0
+//        }
+        
+//        guard let profileViewModel = profileViewModel, let recipes = profileViewModel.recipes else {
+//            return 0
+//        }
+        guard let recipes = recipes else {
             return 0
         }
         
-        return profileViewModelRecipesItem.recipes.count
+        return recipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -172,11 +200,22 @@ extension RecipesListViewController: UITableViewDataSource {
         if isFiltering {
             recipe = filteredRecipes[indexPath.row]
         } else {
-            guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+//            guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+//                return cell
+//            }
+//            recipe = profileViewModelRecipesItem.recipes[indexPath.row]
+            
+//            guard let recipes = profileViewModel?.recipes else {
+//                return cell
+//            }
+            
+            guard let recipes = recipes else {
                 return cell
             }
-            recipe = profileViewModelRecipesItem.recipes[indexPath.row]
+            
+            recipe = recipes[indexPath.row]
         }
+        
         cell.item = recipe
         return cell
     }
@@ -186,18 +225,40 @@ extension RecipesListViewController: UITableViewDataSource {
             let recipe: Recipe
             if isFiltering {
                 recipe = filteredRecipes[indexPath.row]
+                filteredRecipes.remove(at: indexPath.row)
             } else {
-                guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+//                guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
+//                    return
+//                }
+//                guard let recipes = profileViewModel?.recipes else {
+//                    return
+//                }
+                
+                guard let rec = recipes else {
                     return
                 }
-                recipe = profileViewModelRecipesItem.recipes[indexPath.row]
+                
+                recipe = rec[indexPath.row]
+                //recipes?.remove(at: indexPath.row)
             }
             // here goes deleting the thing from the database
+            
             profileViewModel?.removeRecipe(with: recipe.id)
+            //setupData()
+            NotificationCenter.default.post(name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
+                                            object: nil)
             
             tableView.deleteRows(at: [indexPath], with: .fade)
-            
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if isFiltering {
+            recipeToPass = filteredRecipes[indexPath.row]
+        } else {
+            recipeToPass = recipes?[indexPath.row]
+        }
+        performSegue(withIdentifier: Constants.detailsSegueName, sender: nil)
     }
 }
 
@@ -236,6 +297,8 @@ extension RecipesListViewController: UISearchBarDelegate {
 extension RecipesListViewController: NewRecipeViewControllerDelegate {
     func newRecipeViewController(_ newRecipeViewController: NewRecipeViewController, didAddRecipe recipe: Recipe) {
         profileViewModel?.addRecipe(recipe: recipe)
-        tableView.reloadData()
+        recipes?.append(recipe)
+        NotificationCenter.default.post(name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
+                                        object: nil)
     }
 }

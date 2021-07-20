@@ -22,14 +22,17 @@ class NewRecipeViewController: UIViewController {
     
     var pickerData: [String] = [String]()
     var selectedType: String?
-    var delegate: NewRecipeViewControllerDelegate?
+    var newRecipeDelegate: NewRecipeViewControllerDelegate?
+//    var editRecipeDelegate: EditRecipeViewControllerDelegate?
+    var recipe: Recipe?
     
     // MARK: - UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        populateDatePicker()
+        populateDishTypePicker()
+        setupDataInView()
     }
     
     // MARK: - IBActions
@@ -48,19 +51,13 @@ class NewRecipeViewController: UIViewController {
         let recipeImage = image.image ?? UIImage()
         let recipeDishType = selectedType!
         
-        //Here goes the creation of a database object and its saving
-        
         let newRecipe = Recipe.create(withTitle: recipeTitle,
                                       ingredients: recipeIngredients,
                                       method: recipeMethod,
                                       type: DishType(rawValue: recipeDishType)!,
                                       image: recipeImage)
         
-        // TODO: Realm
-        // Not sure if recipe model should be directly used here or ViewModel somehow
-        // ... code
-        //try! realm.write(newRecipe)
-        delegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
+        newRecipeDelegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
         
         dismiss(animated: true, completion: nil)
     }
@@ -71,7 +68,7 @@ class NewRecipeViewController: UIViewController {
     
     // MARK: - Private methods
     
-    private func populateDatePicker() {
+    private func populateDishTypePicker() {
         for value in DishType.allCases {
             pickerData.append(value.rawValue)
         }
@@ -79,17 +76,20 @@ class NewRecipeViewController: UIViewController {
         dishType.delegate = self
         dishType.dataSource = self
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    private func setupDataInView() {
+        guard let data = recipe else {
+            return
+        }
+        
+        titleTextField.text = data.title
+        ingredients.text = data.ingredients.joined(separator: "\n")
+        method.text = data.method
+        image.image = data.uiImage
+        
+        dishType.selectRow(DishType.getIndex(of: data.type)!, inComponent: 0, animated: false)
+        selectedType = data.type
     }
-    */
-
 }
 
 extension NewRecipeViewController: UIPickerViewDelegate {
