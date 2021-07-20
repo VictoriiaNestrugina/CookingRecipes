@@ -59,7 +59,7 @@ class DetailsViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navigationController = segue.destination as! UINavigationController
         if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
-            newRecipeViewController.newRecipeDelegate = self
+            newRecipeViewController.delegate = self
             newRecipeViewController.recipe = data
         }
     }

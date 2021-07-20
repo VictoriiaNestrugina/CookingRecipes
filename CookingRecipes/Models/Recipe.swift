@@ -33,10 +33,6 @@ class Recipe: Object {
     override init() {
         super.init()
     }
-    // Здесь инициализатор из массива String, переданный Profile
-    //    init(data: Data) {
-    //
-    //    }
     
     // MARK: - Static functions
     

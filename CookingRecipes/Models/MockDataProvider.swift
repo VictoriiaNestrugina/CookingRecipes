@@ -197,7 +197,6 @@ final class MockDataProvider {
         image = UIImage(named: "EnglishGardenMocktail")!
         
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        //return Profile.create(withName: "Test Name", recipes: recipes)
         
         let profile = Profile(id: Constants.userId, fullName: "Viktoria Nestrugina")
         profile.recipes.append(objectsIn: recipes)

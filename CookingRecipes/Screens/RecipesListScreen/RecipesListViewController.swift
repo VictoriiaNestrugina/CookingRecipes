@@ -112,28 +112,6 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
                                             category: DishType?,
                                             date: Date?) {
         
-//        guard let profileViewModel = profileViewModel,
-//              profileViewModel.items.count > 0,
-//              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
-//            return
-//        }
-        
-//        filteredRecipes = profileViewModelRecipesItem.recipes.filter { (recipe: Recipe) -> Bool in
-//            let doesMatchCategory = category == nil || recipe.type == category!.rawValue
-//            let doesMatchDate = date == nil
-//                || Calendar.current.compare(recipe.creationDate, to: date!, toGranularity: .day) == .orderedSame
-//
-//            if isSearchBarEmpty {
-//                return doesMatchCategory && doesMatchDate
-//            } else {
-//                return doesMatchCategory && doesMatchDate && recipe.title.lowercased().contains(searchText.lowercased())
-//            }
-//        }
-        
-//        guard let profileViewModel = profileViewModel, let recipes = profileViewModel.recipes else {
-//            return
-//        }
-        
         guard let recipes = recipes else {
             return
         }
@@ -158,7 +136,7 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navigationController = segue.destination as! UINavigationController
         if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
-            newRecipeViewController.newRecipeDelegate = self
+            newRecipeViewController.delegate = self
         } else if let detailsViewController = navigationController.topViewController as? DetailsViewController {
             detailsViewController.data = recipeToPass
             detailsViewController.profileViewModel = profileViewModel
@@ -177,15 +155,6 @@ extension RecipesListViewController: UITableViewDataSource {
             return filteredRecipes.count
         }
     
-//        guard let profileViewModel = profileViewModel,
-//              profileViewModel.items.count > 0,
-//              let profileViewModelRecipesItem = profileViewModel.items[1] as? ProfileViewModelRecipesItem else {
-//            return 0
-//        }
-        
-//        guard let profileViewModel = profileViewModel, let recipes = profileViewModel.recipes else {
-//            return 0
-//        }
         guard let recipes = recipes else {
             return 0
         }
@@ -200,15 +169,6 @@ extension RecipesListViewController: UITableViewDataSource {
         if isFiltering {
             recipe = filteredRecipes[indexPath.row]
         } else {
-//            guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
-//                return cell
-//            }
-//            recipe = profileViewModelRecipesItem.recipes[indexPath.row]
-            
-//            guard let recipes = profileViewModel?.recipes else {
-//                return cell
-//            }
-            
             guard let recipes = recipes else {
                 return cell
             }
@@ -227,26 +187,15 @@ extension RecipesListViewController: UITableViewDataSource {
                 recipe = filteredRecipes[indexPath.row]
                 filteredRecipes.remove(at: indexPath.row)
             } else {
-//                guard let profileViewModelRecipesItem = profileViewModel?.items[1] as? ProfileViewModelRecipesItem else {
-//                    return
-//                }
-//                guard let recipes = profileViewModel?.recipes else {
-//                    return
-//                }
-                
                 guard let rec = recipes else {
                     return
                 }
                 
                 recipe = rec[indexPath.row]
-                //recipes?.remove(at: indexPath.row)
             }
-            // here goes deleting the thing from the database
             
             profileViewModel?.removeRecipe(with: recipe.id)
-            //setupData()
-            NotificationCenter.default.post(name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
-                                            object: nil)
+            setupData()
             
             tableView.deleteRows(at: [indexPath], with: .fade)
         }

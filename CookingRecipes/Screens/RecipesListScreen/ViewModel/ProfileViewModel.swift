@@ -9,16 +9,10 @@ import RealmSwift
 import SwiftyVK
 import Foundation
 
-// Here goes:
-// 1. Validation
-// 2. Database extraction
-// 3. Data transformation to pass to view controller when needed to display
-
 class ProfileViewModel: NSObject {
     
     // MARK: - Private properties
     
-    //private let realm = try! Realm()
     private var profile: Profile?
     
     // MARK: - Properties
@@ -30,98 +24,46 @@ class ProfileViewModel: NSObject {
     
     override init() {
         super.init()
-        
-//        guard let profile = profile else {
-//            return
-//        }
-//        let nameItem = ProfileViewModelNameItem(id: profile.id, fullName: profile.fullName)
-//        items.append(nameItem)
-//
-//        let recipesItem = ProfileViewModelRecipesItem(recipes: profile.recipes)
-//        items.append(recipesItem)
     }
-    
-    // MARK: - Database extraction
-    
-    // This is supposed to get data from the database/file to
-//    func getDataFromDatabase(_ filename: String) -> Data {
-//
-//        return
-//    }
     
     // MARK: - Methods
     
     func authorize() {
         VK.sessions.default.logIn(onSuccess: onAuthorizationSuccess(info:),
-                                  onError: onAuthorizationFailure(error:)
-        )
+                                  onError: onAuthorizationFailure(error:))
     }
     
     func addRecipe(recipe: Recipe) {
-//        DispatchQueue.main.async {
-            let realm = try! Realm()
-//            guard self.items.count > 1, let profileViewModelRecipesItem = self.items[1] as? ProfileViewModelRecipesItem else {
-//                return
-//            }
-            
-//            try! profileViewModelRecipesItem.recipes.realm?.write {
-//                profileViewModelRecipesItem.recipes.append(recipe)
-//            }
-            
-            guard let profile = self.profile else {
-                return
-            }
-            
-            try! realm.write {
-                profile.recipes.append(recipe)
-            }
-            
-//        }
+        let realm = try! Realm()
+
+        guard let profile = self.profile else {
+            return
+        }
+        
+        try! realm.write {
+            profile.recipes.append(recipe)
+        }
     }
     
     func removeRecipe(with id: String) {
-//        guard items.count > 1, let profileViewModelRecipesItem = items[1] as? ProfileViewModelRecipesItem else {
-//            return
-//        }
+        let realm = try! Realm()
         
-//        var isFound = false
-//        var i = 0
-//        while i < profileViewModelRecipesItem.recipes.count && !isFound {
-//            if profileViewModelRecipesItem.recipes[i].id == id {
-//                isFound = true
-//            } else {
-//                i += 1
-//            }
-//        }
-        
-//        try! realm.write {
-//            let recipeToRemove = profileViewModelRecipesItem.recipes[i]
-//            realm.delete(recipeToRemove)
-//        }
-        
-        //В тьюториале не было этой строки, но мне кажется, что она нужна
-//        profileViewModelRecipesItem.recipes.remove(at: i)
-        
-//        DispatchQueue.main.async {
-            let realm = try! Realm()
-            
-            guard let profile = self.profile else {
-                return
+        guard let profile = self.profile else {
+            return
+        }
+        var isFound = false
+        var i = 0
+        while i < profile.recipes.count && !isFound {
+            if profile.recipes[i].id == id {
+                isFound = true
+            } else {
+                i += 1
             }
-            var isFound = false
-            var i = 0
-            while i < profile.recipes.count && !isFound {
-                if profile.recipes[i].id == id {
-                    isFound = true
-                } else {
-                    i += 1
-                }
-            }
-            
-            try! realm.write {
-                profile.recipes.remove(at: i)
-            }
-//        }
+        }
+        
+        try! realm.write {
+            profile.recipes.remove(at: i)
+        }
     }
     
     func edit(recipe: Recipe, with value: Recipe) {
@@ -181,12 +123,6 @@ class ProfileViewModel: NSObject {
                 // Show recipes saved in the database
                 DispatchQueue.main.async {
                     let realm = try! Realm()
-//                    if self.items.count > 1, let profileViewModelRecipesItem = self.items[1] as? ProfileViewModelRecipesItem {
-//                        if profileViewModelRecipesItem.recipes.realm == nil, let list = self.realm.objects(Profile.self).first {
-//                            profileViewModelRecipesItem.recipes = list.recipes
-//                        }
-//
-//                    }
                     
                     let storedProfile = realm.objects(Profile.self).filter {
                         return $0.id == UserDefaults.standard.integer(forKey: UserDefaultsConstants.userId)
@@ -213,8 +149,6 @@ class ProfileViewModel: NSObject {
             .send()
     }
     
-    
-    
     // MARK: - FOR IMPORT, just a scratch
     
     init(from json: String) {
@@ -223,11 +157,6 @@ class ProfileViewModel: NSObject {
             return
         }
         self.profile = profile
-//        let nameItem = ProfileViewModelNameItem(id: profile.id, fullName: profile.fullName)
-//        items.append(nameItem)
-//
-//        let recipesItem = ProfileViewModelRecipesItem(recipes: profile.recipes)
-//        items.append(recipesItem)
     }
     
     func getDataFromFile(filename: String) -> Data? {

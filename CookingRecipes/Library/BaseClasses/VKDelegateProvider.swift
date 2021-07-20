@@ -10,12 +10,19 @@ import SwiftyVK
 import UIKit
 
 final class VKDelegateProvider: SwiftyVKDelegate {
+    
+    // MARK: - Constants
+    
     let appId = "7899743"
     let scopes: Scopes = [.email, .offline]
+    
+    // MARK: Initialization
     
     init() {
         VK.setUp(appId: appId, delegate: self)
     }
+    
+    // MARK: - SwiftyVKDelegate
     
     func vkNeedsScopes(for sessionId: String) -> Scopes {
         return scopes

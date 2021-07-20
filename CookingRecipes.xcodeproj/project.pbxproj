@@ -150,7 +150,6 @@
 				983A5B222698CDF7006A3A6B /* Screens */,
 				983A5B202698CD9C006A3A6B /* Models */,
 				983A5B212698CDD4006A3A6B /* Resources */,
-				983A5B262698CF0E006A3A6B /* Services */,
 			);
 			path = CookingRecipes;
 			sourceTree = "<group>";
@@ -177,7 +176,6 @@
 			isa = PBXGroup;
 			children = (
 				982446E226A1B59400E2F56E /* VKDelegateProvider.swift */,
-				98C922C126A3640C00E61E07 /* UserDefaultsConstants.swift */,
 				98FB342D26A70090000AA2C3 /* SwiftyJSON.swift */,
 			);
 			path = BaseClasses;
@@ -250,13 +248,6 @@
 			path = NewRecipeScreen;
 			sourceTree = "<group>";
 		};
-		983A5B262698CF0E006A3A6B /* Services */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
 		983A5B272698CF26006A3A6B /* Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,6 +296,7 @@
 			children = (
 				98FB342826A645D1000AA2C3 /* Indicator.swift */,
 				98FB343126A751F9000AA2C3 /* GlobalConstants.swift */,
+				98C922C126A3640C00E61E07 /* UserDefaultsConstants.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";

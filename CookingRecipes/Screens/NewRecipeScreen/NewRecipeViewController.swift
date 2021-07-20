@@ -22,8 +22,7 @@ class NewRecipeViewController: UIViewController {
     
     var pickerData: [String] = [String]()
     var selectedType: String?
-    var newRecipeDelegate: NewRecipeViewControllerDelegate?
-//    var editRecipeDelegate: EditRecipeViewControllerDelegate?
+    var delegate: NewRecipeViewControllerDelegate?
     var recipe: Recipe?
     
     // MARK: - UIViewController
@@ -57,7 +56,7 @@ class NewRecipeViewController: UIViewController {
                                       type: DishType(rawValue: recipeDishType)!,
                                       image: recipeImage)
         
-        newRecipeDelegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
+        delegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
         
         dismiss(animated: true, completion: nil)
     }

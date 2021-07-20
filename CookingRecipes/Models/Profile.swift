@@ -18,11 +18,6 @@ class Profile: Object {
     
     // MARK: - Initialization
     
-    // Здесь инициализация из Data, которая по цепочке передается как массив String вложенным объектам
-//    init(data: Data) {
-//
-//    }
-    
     override init() {
         super.init()
     }
@@ -47,6 +42,7 @@ class Profile: Object {
     }
     
     // MARK: - FOR IMPORT, just a scratch
+    
     init?(data: Data) {
         do {
             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
