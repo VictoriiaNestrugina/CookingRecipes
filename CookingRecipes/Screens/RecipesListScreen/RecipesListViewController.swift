@@ -45,7 +45,7 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     
     var isFiltering: Bool {
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
-        return searchController.isActive && (!isSearchBarEmpty || searchBarScopeIsFiltering)
+        return searchController.isActive && (!isSearchBarEmpty || searchBarScopeIsFiltering) || selectedDate != nil
     }
     
     // MARK: - UIViewController
@@ -85,7 +85,7 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         
         // Setup for date picker button
         searchController.searchBar.showsBookmarkButton = true
-        searchController.searchBar.setImage(UIImage(named: "Sort"), for: .bookmark, state: .normal)
+        searchController.searchBar.setImage(UIImage(systemName: "calendar"), for: .bookmark, state: .normal)
         
     }
     
@@ -108,9 +108,7 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         tableView.reloadData()
     }
     
-    private func filterContentForSearchText(_ searchText: String,
-                                            category: DishType?,
-                                            date: Date?) {
+    private func filterContentForSearchText(_ searchText: String, category: DishType?, date: Date?) {
         
         guard let recipes = recipes else {
             return
@@ -226,20 +224,24 @@ extension RecipesListViewController: UISearchBarDelegate {
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        let alert = UIAlertController(title: "Select date", message: nil, preferredStyle: .actionSheet)
-
         let datePicker = UIDatePicker()
-        datePicker.timeZone = NSTimeZone.local
-        datePicker.frame = CGRect(x: 0, y: 15, width: Constants.screenWidth - 10, height: Constants.screenHeight - 10)
+        datePicker.frame = CGRect(x: 15, y: 15, width: 270, height: 100)
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+            
+        let alert = UIAlertController(title: "Select date", message: "\n\n", preferredStyle: .alert)
         alert.view.addSubview(datePicker)
-        let filterAction = UIAlertAction(title: "Choose", style: .default) { [unowned self] _ in
+
+        let selectAction = UIAlertAction(title: "OK", style: .default, handler: { [unowned self] _ in
             self.selectedDate = datePicker.date
             filterContentForSearchText(searchBar.text!, category: self.selectedCategory, date: self.selectedDate)
-        }
+        })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        alert.addAction(filterAction)
+
+        alert.addAction(selectAction)
         alert.addAction(cancelAction)
-        present(alert, animated: true, completion: nil)
+
+        present(alert, animated: true)
     }
 }
 
