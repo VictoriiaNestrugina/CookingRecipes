@@ -10,35 +10,35 @@ import UIKit
 class DetailsViewController: UIViewController {
 
     // MARK: - IBOutlet
-    
+
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var typeLabel: UILabel!
     @IBOutlet weak var ingredientsTextField: UITextView!
     @IBOutlet weak var methodTextField: UITextView!
     @IBOutlet weak var recipeImageView: UIImageView!
-    
+
     // MARK: - Properties
-    
+
     var data: Recipe?
     var profileViewModel: ProfileViewModel?
-    
+
     // MARK: - UIViewController
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupDataInView()
         setupNotifications()
     }
-    
+
     // MARK: - IBAction
-    
+
     @IBAction func returnTapped(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
-    
+
     // MARK: - Private methods
-    
+
     @objc private func setupDataInView() {
         guard let data = data else {
             return
@@ -49,15 +49,21 @@ class DetailsViewController: UIViewController {
         methodTextField.text = data.method
         recipeImageView.image = data.uiImage
     }
-    
+
     private func setupNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(setupDataInView), name: Notification.Name(GlobalConstants.databaseUpdateNotificationName), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(setupDataInView),
+                                               name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
+                                               object: nil)
     }
-    
+
     // MARK: - Navigation
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let navigationController = segue.destination as! UINavigationController
+        guard let navigationController = segue.destination as? UINavigationController else {
+            return
+        }
+
         if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
             newRecipeViewController.delegate = self
             newRecipeViewController.recipe = data

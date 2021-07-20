@@ -10,110 +10,113 @@ import RealmSwift
 import SwiftyVK
 
 class RecipesListViewController: UIViewController, UITableViewDelegate {
-    
+
     // MARK: - Constants
-    
+
     private enum Constants {
         static let screenWidth = UIScreen.main.bounds.width
         static let screenHeight = UIScreen.main.bounds.height
         static let detailsSegueName = "detailsSegue"
     }
-    
+
     // MARK: - IBOutlet
-    
+
     @IBOutlet weak var tableView: UITableView!
-    
+
     // MARK: - Private properties
-    
+
     private var recipes: [Recipe]?
     private var fullName: String?
     private var recipeToPass: Recipe?
-    
+
     // MARK: - Properties
-    
+
     var profileViewModel: ProfileViewModel?
-    
+
     // For search
     var filteredRecipes: [Recipe] = []
     let searchController = UISearchController(searchResultsController: nil)
     var selectedCategory: DishType?
     var selectedDate: Date?
-        
+
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
-    
+
     var isFiltering: Bool {
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!isSearchBarEmpty || searchBarScopeIsFiltering) || selectedDate != nil
     }
-    
+
     // MARK: - UIViewController
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupSearchBar()
         setupData()
         setupTableView()
         setupNotifications()
     }
-    
+
     // MARK: - IBAction
-    
+
     @IBAction func logout(_ sender: UIBarButtonItem) {
         VK.sessions.default.logOut()
         dismiss(animated: true, completion: nil)
     }
-    
+
     // MARK: - Private methods
-    
+
     private func setupSearchBar() {
         // Informs RecipesListViewController class of changes if the search bar
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        
+
         // Attaching the search bar to navigation bar
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         searchController.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = true
-        
+
         // Setup for the scope bar
         searchController.searchBar.scopeButtonTitles = ["All"] + DishType.allCases.map { $0.rawValue }
         searchController.searchBar.delegate = self
-        
+
         // Setup for date picker button
         searchController.searchBar.showsBookmarkButton = true
         searchController.searchBar.setImage(UIImage(systemName: "calendar"), for: .bookmark, state: .normal)
-        
+
     }
-    
+
     private func setupData() {
         fullName = profileViewModel?.provideFullName()
         recipes = profileViewModel?.provideRecipes()
     }
-    
+
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
     }
-    
+
     private func setupNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(GlobalConstants.databaseUpdateNotificationName), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(reloadData),
+                                               name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
+                                               object: nil)
     }
-    
+
     @objc func reloadData() {
         recipes = profileViewModel?.provideRecipes()
         tableView.reloadData()
     }
-    
+
     private func filterContentForSearchText(_ searchText: String, category: DishType?, date: Date?) {
-        
+
         guard let recipes = recipes else {
             return
         }
-        
+
         filteredRecipes = recipes.filter { (recipe: Recipe) -> Bool in
             let doesMatchCategory = category == nil || recipe.type == category!.rawValue
             let doesMatchDate = date == nil
@@ -125,14 +128,17 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
                 return doesMatchCategory && doesMatchDate && recipe.title.lowercased().contains(searchText.lowercased())
             }
         }
-        
+
         tableView.reloadData()
     }
-    
+
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let navigationController = segue.destination as! UINavigationController
+        guard let navigationController = segue.destination as? UINavigationController else {
+            return
+        }
+
         if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
             newRecipeViewController.delegate = self
         } else if let detailsViewController = navigationController.topViewController as? DetailsViewController {
@@ -143,26 +149,29 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
 }
 
 extension RecipesListViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
             return filteredRecipes.count
         }
-    
+
         guard let recipes = recipes else {
             return 0
         }
-        
+
         return recipes.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "recipeCellIdentifier", for: indexPath) as! RecipeTableViewCell
-        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "recipeCellIdentifier", for: indexPath)
+                as? RecipeTableViewCell else {
+            return UITableViewCell()
+        }
+
         let recipe: Recipe
         if isFiltering {
             recipe = filteredRecipes[indexPath.row]
@@ -170,15 +179,17 @@ extension RecipesListViewController: UITableViewDataSource {
             guard let recipes = recipes else {
                 return cell
             }
-            
+
             recipe = recipes[indexPath.row]
         }
-        
+
         cell.item = recipe
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+
+    func tableView(_ tableView: UITableView,
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let recipe: Recipe
             if isFiltering {
@@ -188,17 +199,17 @@ extension RecipesListViewController: UITableViewDataSource {
                 guard let rec = recipes else {
                     return
                 }
-                
+
                 recipe = rec[indexPath.row]
             }
-            
+
             profileViewModel?.removeRecipe(with: recipe.id)
             setupData()
-            
+
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if isFiltering {
             recipeToPass = filteredRecipes[indexPath.row]
@@ -222,13 +233,13 @@ extension RecipesListViewController: UISearchBarDelegate {
         selectedCategory = DishType(rawValue: searchBar.scopeButtonTitles![selectedScope])
         filterContentForSearchText(searchBar.text!, category: selectedCategory, date: selectedDate)
     }
-    
+
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         let datePicker = UIDatePicker()
         datePicker.frame = CGRect(x: 15, y: 15, width: 270, height: 100)
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
-            
+
         let alert = UIAlertController(title: "Select date", message: "\n\n", preferredStyle: .alert)
         alert.view.addSubview(datePicker)
 

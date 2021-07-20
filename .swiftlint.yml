@@ -1,0 +1,4 @@
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Pods
+  - CookingRecipes/Library/BaseClasses/SwiftyJSON.swift
+  - CookingRecipes/Models/MockData/MockDataProvider.swift

@@ -11,16 +11,16 @@ import UIKit
 public class Indicator {
 
     // MARK: - Constants
-    
+
     public static let sharedInstance = Indicator()
-    
+
     // MARK: - Properties
-    
+
     var blurImg = UIImageView()
     var indicator = UIActivityIndicatorView()
 
     // MARK: - Initialization
-    
+
     private init() {
         blurImg.frame = UIScreen.main.bounds
         blurImg.backgroundColor = UIColor.black
@@ -33,7 +33,7 @@ public class Indicator {
     }
 
     // MARK: - Methods
-    
+
     func showIndicator() {
         DispatchQueue.main.async( execute: {
             let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
@@ -47,7 +47,7 @@ public class Indicator {
             }
         })
     }
-    
+
     func hideIndicator() {
 
         DispatchQueue.main.async(execute: {

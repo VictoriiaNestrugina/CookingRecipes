@@ -13,7 +13,7 @@ enum DishType: String, CaseIterable {
     case side = "Side"
     case dessert = "Dessert"
     case drink = "Drink"
-    
+
     static func getIndex(of value: String) -> Int? {
         switch value {
         case DishType.mainCourse.rawValue:

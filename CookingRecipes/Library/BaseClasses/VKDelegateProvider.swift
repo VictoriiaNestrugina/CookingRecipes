@@ -10,20 +10,20 @@ import SwiftyVK
 import UIKit
 
 final class VKDelegateProvider: SwiftyVKDelegate {
-    
+
     // MARK: - Constants
-    
+
     let appId = "7899743"
     let scopes: Scopes = [.email, .offline]
-    
+
     // MARK: Initialization
-    
+
     init() {
         VK.setUp(appId: appId, delegate: self)
     }
-    
+
     // MARK: - SwiftyVKDelegate
-    
+
     func vkNeedsScopes(for sessionId: String) -> Scopes {
         return scopes
     }
@@ -37,24 +37,24 @@ final class VKDelegateProvider: SwiftyVKDelegate {
             }
             topController.present(viewController, animated: true, completion: nil)
         }
-        
+
     }
-    
-    func vkTokenCreated(for sessionId: String, info: [String : String]) {
+
+    func vkTokenCreated(for sessionId: String, info: [String: String]) {
         print("token created in session \(sessionId) with info \(info)")
         UserDefaults.standard.set(true, forKey: UserDefaultsConstants.isAuthorized)
         UserDefaults.standard.set(info[UserDefaultsConstants.userId], forKey: UserDefaultsConstants.userId)
     }
-    
-    func vkTokenUpdated(for sessionId: String, info: [String : String]) {
+
+    func vkTokenUpdated(for sessionId: String, info: [String: String]) {
         print("token updated in session \(sessionId) with info \(info)")
     }
-    
+
     func vkTokenRemoved(for sessionId: String) {
         print("token removed in session \(sessionId)")
         UserDefaults.standard.set(false, forKey: UserDefaultsConstants.isAuthorized)
         UserDefaults.standard.removeObject(forKey: UserDefaultsConstants.userId)
         UserDefaults.standard.removeObject(forKey: UserDefaultsConstants.fullName)
     }
-    
+
 }

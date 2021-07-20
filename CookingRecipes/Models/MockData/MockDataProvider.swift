@@ -9,19 +9,19 @@ import Foundation
 import RealmSwift
 
 final class MockDataProvider {
-    
+
     // MARK: - Constants
-    
+
     private enum Constants {
         // Replace user id with yours to quickly fill the database with recipes
         static let userId = 52978224
     }
-    
+
     // MARK: - Static methods
-    
+
     static func provideMockData() -> Profile {
         var recipes: [Recipe] = []
-        
+
         var title = "Easy homemade pickle"
         var ingredients = ["400 g crunchy veg, such as radishes, carrots, red onion, cauliflower, cucumber",
                            "250 ml vinegar , such as white wine, red wine or cider",
@@ -39,9 +39,9 @@ final class MockDataProvider {
             """
         var type = DishType.side
         var image = UIImage(named: "EasyHomemadePickle")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         title = "Chorizo & pear red cabbage"
         ingredients = ["150 g quality chorizo",
                         "2 teaspoons fennel seeds",
@@ -55,7 +55,7 @@ final class MockDataProvider {
             """
         type = DishType.side
         image = UIImage(named: "ChorizoRearRedCabbage")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
 
         title = "Beautiful courgette carbonara"
@@ -81,9 +81,9 @@ final class MockDataProvider {
             """
         type = DishType.mainCourse
         image = UIImage(named: "BeautifulCourgetteCarbonara")!
-       
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         title = "Perfect roast beef"
         ingredients = ["1.5 kg topside of beef",
             "2 medium onions",
@@ -105,9 +105,9 @@ final class MockDataProvider {
             """
         type = DishType.mainCourse
         image = UIImage(named: "PerfectRoastBeef")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         title = "Chocolate orange shortbread"
         ingredients = ["150 g unsalted butter , at room temperature",
             "200 g plain flour",
@@ -126,9 +126,9 @@ final class MockDataProvider {
             """
         type = DishType.dessert
         image = UIImage(named: "ChocolateOrangeShortbread")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         title = "Hazelnut madeleines with frangelico cream"
         ingredients = ["185 g unsalted butter",
             "60 ml double cream",
@@ -155,9 +155,9 @@ final class MockDataProvider {
             """
         type = DishType.dessert
         image = UIImage(named: "HazelnutMadeleinesWithFrangelicoCream")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         title = "Summer cordial"
         ingredients = ["600 g raspberries",
             "2 lemons",
@@ -172,9 +172,9 @@ final class MockDataProvider {
             """
         type = DishType.drink
         image = UIImage(named: "SummerCordial")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         title = "English garden mocktail"
         ingredients = ["2 oranges",
             "1 lemon",
@@ -195,24 +195,24 @@ final class MockDataProvider {
             """
         type = DishType.drink
         image = UIImage(named: "EnglishGardenMocktail")!
-        
+
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
-        
+
         let profile = Profile(id: Constants.userId, fullName: "Viktoria Nestrugina")
         profile.recipes.append(objectsIn: recipes)
         return profile
     }
-    
+
     static func fillDatabaseWithMockData() {
         let realm = try! Realm()
         let profile = provideMockData()
-        
+
         let storedProfile = realm.objects(Profile.self).filter {
             return $0.id == profile.id
         }
-        
+
         print("Stored profiles: \(storedProfile.count)")
-        
+
         if storedProfile.isEmpty {
             try! realm.write {
                 realm.add(profile)
@@ -223,16 +223,16 @@ final class MockDataProvider {
             }
         }
     }
-    
+
     static func clearDatabase() {
         DispatchQueue.main.async {
             let realm = try! Realm()
             try! realm.write {
                 realm.delete(realm.objects(Profile.self))
             }
-            
+
             print("Objects in database = \(realm.objects(Profile.self).count)")
         }
-        
+
     }
 }

@@ -15,12 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
         vkDelegateProvider = VKDelegateProvider()
         return true
     }
-    
+
     @available(iOS 9.0, *)
     func application(_ app: UIApplication,
                      open url: URL,
@@ -29,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         VK.handle(url: url, sourceApplication: app)
         return true
     }
-    
+
     func application(_ application: UIApplication,
                      open url: URL,
                      sourceApplication: String?,
@@ -38,4 +39,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 }
-

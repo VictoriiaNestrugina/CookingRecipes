@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol NewRecipeViewControllerDelegate {
+protocol NewRecipeViewControllerDelegate: AnyObject {
     func newRecipeViewController(_ newRecipeViewController: NewRecipeViewController, didAddRecipe recipe: Recipe)
 }

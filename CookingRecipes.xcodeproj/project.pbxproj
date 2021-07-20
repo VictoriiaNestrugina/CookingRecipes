@@ -31,6 +31,7 @@
 		98FB342B26A66A81000AA2C3 /* AuthorizationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FB342A26A66A81000AA2C3 /* AuthorizationDelegate.swift */; };
 		98FB342E26A70090000AA2C3 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FB342D26A70090000AA2C3 /* SwiftyJSON.swift */; };
 		98FB343226A751F9000AA2C3 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FB343126A751F9000AA2C3 /* GlobalConstants.swift */; };
+		98FB343526A783AE000AA2C3 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 98FB343426A783AE000AA2C3 /* .swiftlint.yml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,12 +77,13 @@
 		9846DFE8269B551A00533700 /* NewRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRecipeViewController.swift; sourceTree = "<group>"; };
 		9846E007269C77B400533700 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		9846E018269DF71800533700 /* NewRecipeViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRecipeViewControllerDelegate.swift; sourceTree = "<group>"; };
-		9846E01D269E036B00533700 /* MockDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockDataProvider.swift; path = CookingRecipes/Models/MockDataProvider.swift; sourceTree = SOURCE_ROOT; };
+		9846E01D269E036B00533700 /* MockDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockDataProvider.swift; path = CookingRecipes/Models/MockData/MockDataProvider.swift; sourceTree = SOURCE_ROOT; };
 		98C922C126A3640C00E61E07 /* UserDefaultsConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsConstants.swift; sourceTree = "<group>"; };
 		98FB342826A645D1000AA2C3 /* Indicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indicator.swift; sourceTree = "<group>"; };
 		98FB342A26A66A81000AA2C3 /* AuthorizationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationDelegate.swift; sourceTree = "<group>"; };
 		98FB342D26A70090000AA2C3 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		98FB343126A751F9000AA2C3 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		98FB343426A783AE000AA2C3 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		E9B2F22DC09D5BC186F1F502 /* Pods-CookingRecipes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CookingRecipes.debug.xcconfig"; path = "Target Support Files/Pods-CookingRecipes/Pods-CookingRecipes.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +125,7 @@
 		98094E3F2698989100E7B91E = {
 			isa = PBXGroup;
 			children = (
+				98FB343426A783AE000AA2C3 /* .swiftlint.yml */,
 				98094E4A2698989100E7B91E /* CookingRecipes */,
 				98094E61269898A300E7B91E /* CookingRecipesTests */,
 				98094E6C269898A300E7B91E /* CookingRecipesUITests */,
@@ -321,6 +324,7 @@
 				98094E452698989100E7B91E /* Frameworks */,
 				98094E462698989100E7B91E /* Resources */,
 				B93A5B52905012749C9EEBBF /* [CP] Embed Pods Frameworks */,
+				98FB343326A7825A000AA2C3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -414,6 +418,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98FB343526A783AE000AA2C3 /* .swiftlint.yml in Resources */,
 				98094E58269898A200E7B91E /* LaunchScreen.storyboard in Resources */,
 				98094E55269898A200E7B91E /* Assets.xcassets in Resources */,
 				98094E532698989100E7B91E /* Main.storyboard in Resources */,
@@ -437,6 +442,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		98FB343326A7825A000AA2C3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
 		B93A5B52905012749C9EEBBF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

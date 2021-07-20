@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol AuthorizationDelegate {
+protocol AuthorizationDelegate: AnyObject {
     func authorizor(_ loader: ProfileViewModel, didFinishLoadingWithResult result: Bool)
 }

@@ -10,13 +10,13 @@ import UIKit
 class RecipeTableViewCell: UITableViewCell {
 
     // MARK: - IBOutlet
-    
+
     @IBOutlet weak var recipeImage: UIImageView!
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var category: UILabel!
-    
+
     // MARK: - Properties
-    
+
     var item: Recipe? {
         didSet {
             guard let item = item else {
@@ -27,9 +27,9 @@ class RecipeTableViewCell: UITableViewCell {
             recipeImage.image = item.uiImage
         }
     }
-    
+
     // MARK: - UITableViewCell
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
     }

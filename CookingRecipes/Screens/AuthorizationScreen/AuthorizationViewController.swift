@@ -8,51 +8,53 @@
 import UIKit
 
 class AuthorizationViewController: UIViewController {
-    
+
     // MARK: - Constants
-    
+
     private enum Constants {
         static let recipesListSegueName = "RecipesListSegue"
     }
 
     // MARK: - Properties
-    
+
     var profileViewModel = ProfileViewModel()
-        
+
     // MARK: - UIViewController
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         profileViewModel.delegate = self
     }
-    
+
     // MARK: - IBAction
-    
+
     @IBAction func authorize(_ sender: UIButton) {
         Indicator.sharedInstance.showIndicator()
         profileViewModel.authorize()
     }
-    
+
     @IBAction func fillDBWithMockData(_ sender: UIButton) {
         MockDataProvider.fillDatabaseWithMockData()
     }
-    
+
     @IBAction func clearDB(_ sender: UIButton) {
         MockDataProvider.clearDatabase()
     }
-    
+
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        let navigationController = segue.destination as! UINavigationController
+        guard let navigationController = segue.destination as? UINavigationController else {
+            return
+        }
+
         if let recipesListViewController = navigationController.topViewController as? RecipesListViewController {
             recipesListViewController.profileViewModel = self.profileViewModel
         }
     }
-    
+
     override func shouldPerformSegue(withIdentifier identifier: String?, sender: Any?) -> Bool {
-        
+
         if let ident = identifier,
            ident == Constants.recipesListSegueName,
            !UserDefaults.standard.bool(forKey: UserDefaultsConstants.isAuthorized) {
@@ -70,7 +72,7 @@ extension AuthorizationViewController: AuthorizationDelegate {
                 Indicator.sharedInstance.hideIndicator()
                 self.performSegue(withIdentifier: Constants.recipesListSegueName, sender: nil)
             }
-            
+
         case false:
             break
         }
