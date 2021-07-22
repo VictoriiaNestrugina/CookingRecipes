@@ -17,7 +17,6 @@ class ProfileViewModel: NSObject {
 
     // MARK: - Properties
 
-    let group = DispatchGroup()
     weak var delegate: AuthorizationDelegate?
 
     // MARK: - Initialization
@@ -110,7 +109,7 @@ class ProfileViewModel: NSObject {
         if case .sessionAlreadyAuthorized(_) = error {
             saveUserInfo()
         } else {
-            group.leave()
+            print(error)
         }
     }
 
