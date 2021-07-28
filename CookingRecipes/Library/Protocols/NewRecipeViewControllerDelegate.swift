@@ -9,4 +9,5 @@ import Foundation
 
 protocol NewRecipeViewControllerDelegate: AnyObject {
     func newRecipeViewController(_ newRecipeViewController: NewRecipeViewController, didAddRecipe recipe: Recipe)
+    func editRecipeViewController(_ newRecipeViewController: NewRecipeViewController, initial: Recipe, edited: Recipe)
 }

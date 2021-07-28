@@ -41,6 +41,9 @@ class NewRecipeViewController: UIViewController {
     }
 
     @IBAction func saveTapped(_ sender: UIBarButtonItem) {
+        guard checkFields() else {
+            return
+        }
         let recipeTitle = titleTextField.text ?? ""
         let recipeIngredients = (ingredients.text ?? "").split(separator: "\n").map {
             String($0)
@@ -48,15 +51,18 @@ class NewRecipeViewController: UIViewController {
 
         let recipeMethod = method.text ?? ""
         let recipeImage = image.image ?? UIImage()
-        let recipeDishType = selectedType!
+        let recipeDishType = selectedType ?? DishType.mainCourse.rawValue
 
         let newRecipe = Recipe.create(withTitle: recipeTitle,
                                       ingredients: recipeIngredients,
                                       method: recipeMethod,
                                       type: DishType(rawValue: recipeDishType)!,
                                       image: recipeImage)
-
-        delegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
+        if let recipe = recipe {
+            delegate?.editRecipeViewController(self, initial: recipe, edited: newRecipe)
+        } else {
+            delegate?.newRecipeViewController(self, didAddRecipe: newRecipe)
+        }
 
         dismiss(animated: true, completion: nil)
     }
@@ -78,6 +84,7 @@ class NewRecipeViewController: UIViewController {
 
     private func setupDataInView() {
         guard let data = recipe else {
+            selectedType = DishType.mainCourse.rawValue
             return
         }
 
@@ -88,6 +95,33 @@ class NewRecipeViewController: UIViewController {
 
         dishType.selectRow(DishType.getIndex(of: data.type)!, inComponent: 0, animated: false)
         selectedType = data.type
+    }
+
+    private func checkFields() -> Bool {
+        var isEverythingOk = true
+
+        if let text = titleTextField.text, !text.isEmpty {
+            titleTextField.backgroundColor = UIColor.systemGray6
+        } else {
+            isEverythingOk = false
+            titleTextField.backgroundColor = UIColor.systemRed
+        }
+
+        if let recipeIngredients = ingredients.text, !recipeIngredients.isEmpty {
+            ingredients.backgroundColor = UIColor.systemGray6
+        } else {
+            isEverythingOk = false
+            ingredients.backgroundColor = UIColor.systemRed
+        }
+
+        if let recipeMethod = method.text, !recipeMethod.isEmpty {
+            method.backgroundColor = UIColor.systemGray6
+        } else {
+            isEverythingOk = false
+            method.backgroundColor = UIColor.systemRed
+        }
+
+        return isEverythingOk
     }
 }
 

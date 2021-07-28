@@ -23,9 +23,9 @@
 		9846DFC32699D5B100533700 /* RecipesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846DFC22699D5B100533700 /* RecipesListViewController.swift */; };
 		9846DFE4269B3EAF00533700 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846DFE3269B3EAF00533700 /* ProfileViewModel.swift */; };
 		9846DFE9269B551A00533700 /* NewRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846DFE8269B551A00533700 /* NewRecipeViewController.swift */; };
-		9846E008269C77B400533700 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E007269C77B400533700 /* DetailsViewController.swift */; };
 		9846E019269DF71800533700 /* NewRecipeViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E018269DF71800533700 /* NewRecipeViewControllerDelegate.swift */; };
 		9846E01E269E036B00533700 /* MockDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E01D269E036B00533700 /* MockDataProvider.swift */; };
+		98568E1226B104EF000FE39F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98568E1126B104EF000FE39F /* UIView.swift */; };
 		9885195426ACA0BF00FC4F52 /* TableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885195326ACA0BF00FC4F52 /* TableViewAnimator.swift */; };
 		9885195626ACC2F400FC4F52 /* TableAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885195526ACC2F400FC4F52 /* TableAnimationFactory.swift */; };
 		9885195826ACC45400FC4F52 /* TableAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885195726ACC45400FC4F52 /* TableAnimation.swift */; };
@@ -82,9 +82,9 @@
 		9846DFC22699D5B100533700 /* RecipesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesListViewController.swift; sourceTree = "<group>"; };
 		9846DFE3269B3EAF00533700 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		9846DFE8269B551A00533700 /* NewRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRecipeViewController.swift; sourceTree = "<group>"; };
-		9846E007269C77B400533700 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		9846E018269DF71800533700 /* NewRecipeViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRecipeViewControllerDelegate.swift; sourceTree = "<group>"; };
 		9846E01D269E036B00533700 /* MockDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockDataProvider.swift; path = CookingRecipes/Models/MockData/MockDataProvider.swift; sourceTree = SOURCE_ROOT; };
+		98568E1126B104EF000FE39F /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		9885195326ACA0BF00FC4F52 /* TableViewAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewAnimator.swift; sourceTree = "<group>"; };
 		9885195526ACC2F400FC4F52 /* TableAnimationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableAnimationFactory.swift; sourceTree = "<group>"; };
 		9885195726ACC45400FC4F52 /* TableAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableAnimation.swift; sourceTree = "<group>"; };
@@ -240,7 +240,6 @@
 				983A5B242698CE6E006A3A6B /* RecipesListScreen */,
 				983A5B232698CE4C006A3A6B /* AuthorizationScreen */,
 				983A5B252698CE9E006A3A6B /* NewRecipeScreen */,
-				9846E006269C779000533700 /* DetailsScreen */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -274,6 +273,7 @@
 		983A5B272698CF26006A3A6B /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				98568E1026B104DB000FE39F /* Extensions */,
 				98FB342C26A6FF56000AA2C3 /* Utilities */,
 				982446E126A1B56800E2F56E /* BaseClasses */,
 				9846DFD9269AEF2C00533700 /* Protocols */,
@@ -299,20 +299,20 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		9846E006269C779000533700 /* DetailsScreen */ = {
-			isa = PBXGroup;
-			children = (
-				9846E007269C77B400533700 /* DetailsViewController.swift */,
-			);
-			path = DetailsScreen;
-			sourceTree = "<group>";
-		};
 		9846E022269E037600533700 /* MockData */ = {
 			isa = PBXGroup;
 			children = (
 				9846E01D269E036B00533700 /* MockDataProvider.swift */,
 			);
 			path = MockData;
+			sourceTree = "<group>";
+		};
+		98568E1026B104DB000FE39F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				98568E1126B104EF000FE39F /* UIView.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		9885195226ACA08100FC4F52 /* Animation */ = {
@@ -585,6 +585,7 @@
 				982446DC269EDB8E00E2F56E /* AuthorizationViewController.swift in Sources */,
 				9846DFE9269B551A00533700 /* NewRecipeViewController.swift in Sources */,
 				9885195426ACA0BF00FC4F52 /* TableViewAnimator.swift in Sources */,
+				98568E1226B104EF000FE39F /* UIView.swift in Sources */,
 				9846DFE4269B3EAF00533700 /* ProfileViewModel.swift in Sources */,
 				98FB343226A751F9000AA2C3 /* GlobalConstants.swift in Sources */,
 				9846E019269DF71800533700 /* NewRecipeViewControllerDelegate.swift in Sources */,
@@ -598,7 +599,6 @@
 				98094E4C2698989100E7B91E /* AppDelegate.swift in Sources */,
 				98FB342E26A70090000AA2C3 /* SwiftyJSON.swift in Sources */,
 				983A5B412698E454006A3A6B /* Recipe.swift in Sources */,
-				9846E008269C77B400533700 /* DetailsViewController.swift in Sources */,
 				9885195A26B03DB300FC4F52 /* GragientView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

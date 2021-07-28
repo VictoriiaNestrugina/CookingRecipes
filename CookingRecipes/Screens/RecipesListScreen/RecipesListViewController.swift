@@ -17,6 +17,12 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         static let screenWidth = UIScreen.main.bounds.width
         static let screenHeight = UIScreen.main.bounds.height
         static let detailsSegueName = "detailsSegue"
+        static let editSegueName = "editSegue"
+        // For table animation
+        static let rowHeight: CGFloat = 150
+        static let animationDuration: TimeInterval = 0.65
+        static let delay: TimeInterval = 0.05
+        static let fontSize: CGFloat = 26
     }
 
     // MARK: - IBOutlet
@@ -28,6 +34,11 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     private var recipes: [Recipe]?
     private var fullName: String?
     private var recipeToPass: Recipe?
+
+    // an enum of type TableAnimation - determines the animation to be applied to the tableViewCells
+    var currentTableAnimation: TableAnimation = .moveUpBounce(rowHeight: Constants.rowHeight,
+                                                                duration: Constants.animationDuration,
+                                                                delay: Constants.delay)
 
     // MARK: - Properties
 
@@ -64,6 +75,13 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
     @IBAction func logout(_ sender: UIBarButtonItem) {
         VK.sessions.default.logOut()
         dismiss(animated: true, completion: nil)
+    }
+
+    // MARK: - Methods
+
+    func edit(recipe: Recipe) {
+        recipeToPass = recipe
+        performSegue(withIdentifier: Constants.editSegueName, sender: nil)
     }
 
     // MARK: - Private methods
@@ -141,9 +159,9 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
 
         if let newRecipeViewController = navigationController.topViewController as? NewRecipeViewController {
             newRecipeViewController.delegate = self
-        } else if let detailsViewController = navigationController.topViewController as? DetailsViewController {
-            detailsViewController.data = recipeToPass
-            detailsViewController.profileViewModel = profileViewModel
+            if let identifier = segue.identifier, identifier == Constants.editSegueName {
+                newRecipeViewController.recipe = recipeToPass
+            }
         }
     }
 }
@@ -184,6 +202,8 @@ extension RecipesListViewController: UITableViewDataSource {
         }
 
         cell.item = recipe
+        cell.tableView = tableView
+        cell.index = indexPath.row
         return cell
     }
 
@@ -211,12 +231,21 @@ extension RecipesListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if isFiltering {
-            recipeToPass = filteredRecipes[indexPath.row]
-        } else {
-            recipeToPass = recipes?[indexPath.row]
+        // Animation
+        guard let selectedCell = tableView.cellForRow(at: indexPath) as? RecipeTableViewCell else {
+            return
         }
-        performSegue(withIdentifier: Constants.detailsSegueName, sender: nil)
+
+        selectedCell.toggle()
+    }
+
+    // MARK: - Animation
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // fetch the animation from the TableAnimation enum and initialze the TableViewAnimator class
+        let animation = currentTableAnimation.getAnimation()
+        let animator = TableViewAnimator(animation: animation)
+        animator.animate(cell: cell, at: indexPath, in: tableView)
     }
 }
 
@@ -262,5 +291,12 @@ extension RecipesListViewController: NewRecipeViewControllerDelegate {
         recipes?.append(recipe)
         NotificationCenter.default.post(name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
                                         object: nil)
+    }
+
+    func editRecipeViewController(_ newRecipeViewController: NewRecipeViewController, initial: Recipe, edited: Recipe) {
+        profileViewModel?.edit(recipe: initial, with: edited)
+        NotificationCenter.default.post(name: Notification.Name(GlobalConstants.databaseUpdateNotificationName),
+                                        object: nil)
+        recipeToPass = nil
     }
 }
