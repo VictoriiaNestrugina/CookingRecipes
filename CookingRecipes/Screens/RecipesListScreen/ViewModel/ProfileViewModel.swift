@@ -25,6 +25,11 @@ class ProfileViewModel: NSObject {
         super.init()
     }
 
+    init(profile: Profile) {
+        super.init()
+        self.profile = profile
+    }
+
     // MARK: - Methods
 
     func authorize() {
@@ -136,8 +141,6 @@ class ProfileViewModel: NSObject {
                     let storedProfile = realm.objects(Profile.self).filter {
                         return $0.id == UserDefaults.standard.integer(forKey: UserDefaultsConstants.userId)
                     }
-
-                    print("Stored profiles: \(storedProfile.count)")
 
                     if storedProfile.isEmpty {
                         self.profile = Profile(id: UserDefaults.standard.integer(forKey: UserDefaultsConstants.userId),

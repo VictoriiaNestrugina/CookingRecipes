@@ -19,7 +19,7 @@ final class MockDataProvider {
 
     // MARK: - Static methods
 
-    static func provideMockData() -> Profile {
+    static func provideMockData(for id: Int? = nil) -> Profile {
         var recipes: [Recipe] = []
 
         var title = "Easy homemade pickle"
@@ -198,14 +198,25 @@ final class MockDataProvider {
 
         recipes.append(Recipe.create(withTitle: title, ingredients: ingredients, method: method, type: type, image: image))
 
-        let profile = Profile(id: Constants.userId, fullName: "Viktoria Nestrugina")
+        var idToUse: Int
+        if let id = id {
+            idToUse = id
+        } else {
+            idToUse = Constants.userId
+        }
+        let profile = Profile(id: idToUse, fullName: "Viktoria Nestrugina")
         profile.recipes.append(objectsIn: recipes)
         return profile
     }
 
-    static func fillDatabaseWithMockData() {
+    static func fillDatabaseWithMockData(for id: Int? = nil) {
         let realm = try! Realm()
-        let profile = provideMockData()
+        let profile: Profile
+        if let id = id {
+            profile = provideMockData(for: id)
+        } else {
+            profile = provideMockData()
+        }
 
         let storedProfile = realm.objects(Profile.self).filter {
             return $0.id == profile.id
@@ -224,15 +235,20 @@ final class MockDataProvider {
         }
     }
 
-    static func clearDatabase() {
-        DispatchQueue.main.async {
-            let realm = try! Realm()
+    static func clearDatabase(for id: Int? = nil) {
+        let realm = try! Realm()
+
+        if let id = id {
+            let storedProfile = realm.objects(Profile.self).filter {
+                return $0.id == id
+            }[0]
+            try! realm.write {
+                realm.delete(storedProfile)
+            }
+        } else {
             try! realm.write {
                 realm.delete(realm.objects(Profile.self))
             }
-
-            print("Objects in database = \(realm.objects(Profile.self).count)")
         }
-
     }
 }
