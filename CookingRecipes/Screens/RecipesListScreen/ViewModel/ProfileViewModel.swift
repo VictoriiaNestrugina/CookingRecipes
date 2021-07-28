@@ -102,6 +102,20 @@ class ProfileViewModel: NSObject {
         return Array(profile.recipes)
     }
 
+    func addRecipes(recipesEntries: [RecipeEntry]) {
+        guard let realm = try? Realm() else {
+            return
+        }
+
+        let recipes = recipesEntries.map {
+            return Recipe(recipeEntry: $0)
+        }
+
+        try? realm.write {
+            profile?.recipes.append(objectsIn: recipes)
+        }
+    }
+
     // MARK: - Private methods
 
     private func onAuthorizationSuccess(info: [String: String]) {
@@ -167,11 +181,11 @@ class ProfileViewModel: NSObject {
     // MARK: - FOR IMPORT, just a scratch
 
     init(from json: String) {
-        super.init()
-        guard let data = getDataFromFile(filename: json), let profile = Profile(data: data) else {
-            return
-        }
-        self.profile = profile
+//        super.init()
+//        guard let data = getDataFromFile(filename: json), let profile = Profile(value: data) else {
+//            return
+//        }
+//        self.profile = profile
     }
 
     func getDataFromFile(filename: String) -> Data? {

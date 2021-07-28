@@ -180,11 +180,23 @@
                                 <action selector="logout:" destination="BYZ-38-t0r" id="Uqu-rn-eyc"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="SVc-Lb-LWT">
-                            <connections>
-                                <segue destination="GDN-os-kdL" kind="presentation" identifier="editSegue" id="Mpz-d8-c8f"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="SVc-Lb-LWT">
+                                <connections>
+                                    <segue destination="GDN-os-kdL" kind="presentation" identifier="editSegue" id="Mpz-d8-c8f"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" image="square.and.arrow.down" catalog="system" id="jur-Kf-vrc">
+                                <connections>
+                                    <action selector="importRecipes:" destination="BYZ-38-t0r" id="dRm-3e-WLr"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" image="square.and.arrow.up" catalog="system" id="30B-Ee-HSx">
+                                <connections>
+                                    <action selector="exportRecipes:" destination="BYZ-38-t0r" id="3p5-bD-I5a"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="Xwh-Kk-ULh" id="66T-L3-8fk"/>
@@ -455,6 +467,8 @@
     <resources>
         <image name="arrow.up.circle" catalog="system" width="128" height="121"/>
         <image name="photo" catalog="system" width="128" height="93"/>
+        <image name="square.and.arrow.down" catalog="system" width="121" height="128"/>
+        <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
         <image name="square.and.pencil" catalog="system" width="128" height="115"/>
         <image name="vk" width="1024" height="1024"/>
         <image name="xmark" catalog="system" width="128" height="113"/>

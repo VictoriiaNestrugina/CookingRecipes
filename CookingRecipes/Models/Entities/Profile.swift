@@ -43,21 +43,21 @@ class Profile: Object {
 
     // MARK: - FOR IMPORT, just a scratch
 
-    init?(data: Data) {
-        do {
-            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let body = json["data"] as? [String: Any] {
-                self.fullName = body["fullName"] as? String ?? ""
-                self.id = body["id"] as? Int ?? 0
-//                self.recipes = body["recipes"] as? [[String: Any]] {
-//                    self.recipes = recipes.map {
-//                        Recipe(json: $0)
-//                    }
-//                }
-            }
-        } catch {
-            print("Erroe deserializing JSON")
-            return nil
-        }
-    }
+//    init?(data: Data) {
+//        do {
+//            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+//               let body = json["data"] as? [String: Any] {
+//                self.fullName = body["fullName"] as? String ?? ""
+//                self.id = body["id"] as? Int ?? 0
+////                self.recipes = body["recipes"] as? [[String: Any]] {
+////                    self.recipes = recipes.map {
+////                        Recipe(json: $0)
+////                    }
+////                }
+//            }
+//        } catch {
+//            print("Erroe deserializing JSON")
+//            return nil
+//        }
+//    }
 }

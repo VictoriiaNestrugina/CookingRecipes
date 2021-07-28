@@ -77,6 +77,42 @@ class RecipesListViewController: UIViewController, UITableViewDelegate {
         dismiss(animated: true, completion: nil)
     }
 
+    @IBAction func exportRecipes(_ sender: UIBarButtonItem) {
+        guard let documentDirectoryUrl = FileManager.default.urls(for: .documentDirectory,
+                                                                  in: .userDomainMask).first else { return }
+        let fileUrl = documentDirectoryUrl.appendingPathComponent("Recipes.json")
+        guard let recipes = recipes else {
+            return
+        }
+        let recipesArray = recipes.map {
+            return $0.convertToEntry()
+        }
+
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let data = try encoder.encode(recipesArray)
+            try data.write(to: fileUrl)
+        } catch {
+            print(error)
+        }
+    }
+
+    @IBAction func importRecipes(_ sender: UIBarButtonItem) {
+        guard let documentsDirectoryUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                .first else { return }
+        let fileUrl = documentsDirectoryUrl.appendingPathComponent("Recipes.json")
+
+        do {
+            let data = try Data(contentsOf: fileUrl, options: [])
+            let recipesEntries = try JSONDecoder().decode([RecipeEntry].self, from: data)
+            profileViewModel?.addRecipes(recipesEntries: recipesEntries)
+        } catch {
+            print(error)
+        }
+        tableView.reloadData()
+    }
+
     // MARK: - Methods
 
     func edit(recipe: Recipe) {

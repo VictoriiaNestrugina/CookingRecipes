@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-enum DishType: String, CaseIterable {
+enum DishType: String, CaseIterable, Codable {
     case mainCourse = "Main"
     case side = "Side"
     case dessert = "Dessert"

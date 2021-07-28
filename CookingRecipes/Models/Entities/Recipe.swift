@@ -69,23 +69,56 @@ class Recipe: Object {
         return Array(ingredients)
     }
 
+    // MARK: - Codable
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case method
+
+    }
+
     // MARK: - FOR IMPORT, just a scratch
 
-    init(json: [String: Any]) {
-        super.init()
-        //        self.id = json["id"] as! String
-        self.title = json["title"] as? String ?? ""
+//    init(json: [String: Any]) {
+//        super.init()
+//        self.id = json["id"] as! String
+//        self.title = json["title"] as? String ?? ""
 //        self.ingredients.append(objectsIn: (json["ingredients"] as! [[String: Any]]).map {
 //            String($0)
 //        })
-        self.method = json["method"] as? String ?? ""
-        self.creationDate = convertStringToDate(string: json["creationDate"] as? String ?? "")
-        self.type = json["method"] as? String ?? ""
-        self.image = NSData(data: convertBase64StringToImage(imageBase64String: json["image"] as? String ?? "")
-                                .jpegData(compressionQuality: 1.0)!)
+//        self.method = json["method"] as? String ?? ""
+//        self.creationDate = convertStringToDate(string: json["creationDate"] as? String ?? "")
+//        self.type = json["method"] as? String ?? ""
+//        self.image = NSData(data: convertBase64StringToImage(imageBase64String: json["image"] as? String ?? "")
+//                                .jpegData(compressionQuality: 1.0)!)
+//    }
+
+    init(recipeEntry: RecipeEntry) {
+        super.init()
+        self.id = UUID()
+            .uuidString
+        self.title = recipeEntry.title
+        self.method = recipeEntry.method
+        self.ingredients.append(objectsIn: recipeEntry.ingredients)
+        self.creationDate = convertStringToDate(string: recipeEntry.creationDate)
+        self.uiImage = convertBase64StringToImage(imageBase64String: recipeEntry.image)
+        self.type = recipeEntry.type.rawValue
+    }
+
+    func convertToEntry() -> RecipeEntry {
+        return RecipeEntry(title: title,
+                           ingredients: Array(ingredients),
+                           method: method,
+                           creationDate: convertDateToString(date: creationDate),
+                           type: DishType(rawValue: type) ?? .mainCourse,
+                           image: convertImageToBase64String(img: uiImage))
     }
 
     // MARK: - Private functions
+
+    private func toJSON() {
+
+    }
 
     private func convertImageToBase64String (img: UIImage) -> String {
         return img.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""

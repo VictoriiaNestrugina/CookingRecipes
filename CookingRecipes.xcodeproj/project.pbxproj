@@ -26,6 +26,7 @@
 		9846E019269DF71800533700 /* NewRecipeViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E018269DF71800533700 /* NewRecipeViewControllerDelegate.swift */; };
 		9846E01E269E036B00533700 /* MockDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9846E01D269E036B00533700 /* MockDataProvider.swift */; };
 		98568E1226B104EF000FE39F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98568E1126B104EF000FE39F /* UIView.swift */; };
+		98568E1426B11F1B000FE39F /* RecipeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98568E1326B11F1B000FE39F /* RecipeEntry.swift */; };
 		9885195426ACA0BF00FC4F52 /* TableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885195326ACA0BF00FC4F52 /* TableViewAnimator.swift */; };
 		9885195626ACC2F400FC4F52 /* TableAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885195526ACC2F400FC4F52 /* TableAnimationFactory.swift */; };
 		9885195826ACC45400FC4F52 /* TableAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885195726ACC45400FC4F52 /* TableAnimation.swift */; };
@@ -85,6 +86,7 @@
 		9846E018269DF71800533700 /* NewRecipeViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRecipeViewControllerDelegate.swift; sourceTree = "<group>"; };
 		9846E01D269E036B00533700 /* MockDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockDataProvider.swift; path = CookingRecipes/Models/MockData/MockDataProvider.swift; sourceTree = SOURCE_ROOT; };
 		98568E1126B104EF000FE39F /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		98568E1326B11F1B000FE39F /* RecipeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeEntry.swift; sourceTree = "<group>"; };
 		9885195326ACA0BF00FC4F52 /* TableViewAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewAnimator.swift; sourceTree = "<group>"; };
 		9885195526ACC2F400FC4F52 /* TableAnimationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableAnimationFactory.swift; sourceTree = "<group>"; };
 		9885195726ACC45400FC4F52 /* TableAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableAnimation.swift; sourceTree = "<group>"; };
@@ -216,10 +218,9 @@
 		983A5B202698CD9C006A3A6B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				98568E1626B11F28000FE39F /* Entries */,
+				98568E1526B11F20000FE39F /* Entities */,
 				9846E022269E037600533700 /* MockData */,
-				983A5B372698E422006A3A6B /* Profile.swift */,
-				983A5B402698E454006A3A6B /* Recipe.swift */,
-				983A5B4A2698EF7B006A3A6B /* DishType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -313,6 +314,24 @@
 				98568E1126B104EF000FE39F /* UIView.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		98568E1526B11F20000FE39F /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				983A5B372698E422006A3A6B /* Profile.swift */,
+				983A5B402698E454006A3A6B /* Recipe.swift */,
+				983A5B4A2698EF7B006A3A6B /* DishType.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		98568E1626B11F28000FE39F /* Entries */ = {
+			isa = PBXGroup;
+			children = (
+				98568E1326B11F1B000FE39F /* RecipeEntry.swift */,
+			);
+			path = Entries;
 			sourceTree = "<group>";
 		};
 		9885195226ACA08100FC4F52 /* Animation */ = {
@@ -591,6 +610,7 @@
 				9846E019269DF71800533700 /* NewRecipeViewControllerDelegate.swift in Sources */,
 				98FB342926A645D1000AA2C3 /* Indicator.swift in Sources */,
 				9885195826ACC45400FC4F52 /* TableAnimation.swift in Sources */,
+				98568E1426B11F1B000FE39F /* RecipeEntry.swift in Sources */,
 				98FB342B26A66A81000AA2C3 /* AuthorizationDelegate.swift in Sources */,
 				9846E01E269E036B00533700 /* MockDataProvider.swift in Sources */,
 				982446E326A1B59400E2F56E /* VKDelegateProvider.swift in Sources */,
